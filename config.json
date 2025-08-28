@@ -1,0 +1,9 @@
+{
+  "modbus": {
+    "host": "localhost",
+    "port": 502
+  },
+  "http": {
+    "port": 8080
+  }
+}
