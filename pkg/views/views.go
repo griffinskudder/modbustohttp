@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Hello(w http.ResponseWriter, req *http.Request) {
+func Hello(w http.ResponseWriter, _ *http.Request) {
 	_, err := fmt.Fprintln(w, "Hello World!")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
