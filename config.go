@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 type Modbus struct {
 	Host    string `json:"host"`
 	Port    int    `json:"port"`
-	SlaveID int    `json:"slaveID"`
+	SlaveID byte   `json:"slaveID"`
 }
 
 type HTTP struct {
