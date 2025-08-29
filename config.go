@@ -16,12 +16,12 @@ type HTTP struct {
 	Port int `json:"port"`
 }
 
-type App struct {
+type AppConfig struct {
 	Modbus Modbus `json:"modbus"`
 	HTTP   HTTP   `json:"http"`
 }
 
-func LoadAppConfig(path string) (*App, error) {
+func LoadAppConfig(path string) (*AppConfig, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func LoadAppConfig(path string) (*App, error) {
 			fmt.Println("Error closing file:", err)
 		}
 	}(file)
-	var app App
+	var app AppConfig
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&app)
 	if err != nil {

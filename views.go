@@ -41,6 +41,8 @@ func ReadHoldingRegisters(handler *modbus.TCPClientHandler) http.HandlerFunc {
 		client := modbus.NewClient(handler)
 		err := handler.Connect()
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, err = w.Write([]byte(err.Error()))
 			return
 		}
 		defer func(handler *modbus.TCPClientHandler) {
@@ -55,6 +57,7 @@ func ReadHoldingRegisters(handler *modbus.TCPClientHandler) http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			_, err = w.Write([]byte(err.Error()))
+			return
 		}
 		quantity := requestData.Quantity
 		if quantity == 0 {
