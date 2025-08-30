@@ -66,6 +66,8 @@ func WriteSingleRegister(handler *modbus.TCPClientHandler) http.HandlerFunc {
 		client := modbus.NewClient(handler)
 		err := handler.Connect()
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, err = w.Write([]byte(err.Error()))
 			return
 		}
 		defer func(handler *modbus.TCPClientHandler) {
