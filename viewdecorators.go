@@ -19,7 +19,8 @@ var HTTPMethods = []string{
 
 type Decorator func(http.HandlerFunc) http.HandlerFunc
 
-// RequireHTTPMethods ensures that the request has only the specified HTTP Method verb and returns http.StatusMethodNotAllowed if not.
+// RequireHTTPMethods ensures that the request has only the specified HTTP Method verb.
+// Returns http.StatusMethodNotAllowed if not.
 func RequireHTTPMethods(methods ...string) Decorator {
 	for _, method := range methods {
 		if slices.Index(HTTPMethods, method) < 0 {
