@@ -212,6 +212,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleCoilsResponse'
+  /modbustohttp.v1alpha1.ModbusService/ReadInputRegisters:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadInputRegisters
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadInputRegisters
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadInputRegistersRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadInputRegistersResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -366,6 +401,47 @@ components:
           minItems: 1
           description: The values of the registers read
       title: ReadHoldingRegistersResponse
+      additionalProperties: false
+    modbustohttp.v1alpha1.ReadInputRegistersRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          description: |
+            The address start start reading from
+            uint32.lte = 65535
+        quantity:
+          exclusiveMinimum: 0
+          type: integer
+          title: quantity
+          maximum: 125
+          description: |
+            The quantity of registers to read start from address
+            uint32.gt = 0
+            uint32.gt_lt = 0
+            uint32.gt_lt_exclusive = 0
+            uint32.gt_lte = 0
+            uint32.gt_lte_exclusive = 0
+            uint32.lte = 125
+          nullable: true
+      title: ReadInputRegistersRequest
+      additionalProperties: false
+      description: |
+        not.out.of.range // address + quantity must not be greater than 65536
+    modbustohttp.v1alpha1.ReadInputRegistersResponse:
+      type: object
+      properties:
+        registers:
+          type: array
+          items:
+            $ref: '#/components/schemas/modbustohttp.v1alpha1.Register'
+          title: registers
+          maxItems: 125
+          minItems: 1
+          description: The values of the registers read
+      title: ReadInputRegistersResponse
       additionalProperties: false
     modbustohttp.v1alpha1.Register:
       type: object

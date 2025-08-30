@@ -137,6 +137,27 @@ func (s Service) WriteMultipleCoils(
 	return connect.NewResponse(&modbusv1alpha1.WriteMultipleCoilsResponse{}), nil
 }
 
+func (s Service) ReadInputRegisters(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.ReadInputRegistersRequest],
+) (*connect.Response[modbusv1alpha1.ReadInputRegistersResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+	modbusData, err := client.ReadInputRegisters(
+		uint16(req.Msg.GetAddress()),
+		uint16(req.Msg.GetQuantity()),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	registers := MapByteArrayToRegisters(modbusData, req.Msg.GetAddress())
+	return connect.NewResponse(&modbusv1alpha1.ReadInputRegistersResponse{Registers: registers}), nil
+}
+
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {
 	return &Service{
 		modbusHandler,

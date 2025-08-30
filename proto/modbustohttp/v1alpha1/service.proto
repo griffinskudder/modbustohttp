@@ -29,6 +29,32 @@ service ModbusService {
   rpc WriteMultipleCoils(WriteMultipleCoilsRequest) returns (WriteMultipleCoilsResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  rpc ReadInputRegisters(ReadInputRegistersRequest) returns (ReadInputRegistersResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  };
+}
+
+message ReadInputRegistersRequest {
+  // The address start start reading from
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535
+  ];
+  // The quantity of registers to read start from address
+  optional uint32 quantity = 2 [
+    (buf.validate.field).uint32.lte=125,(buf.validate.field).uint32.gt=0
+  ];
+  option (buf.validate.message).cel = {
+    id: "not.out.of.range"
+    message: "address + quantity must not be greater than 65536"
+    expression: "this.address + this.quantity <= 65536"
+  };
+}
+
+message ReadInputRegistersResponse {
+  // The values of the registers read
+  repeated Register registers = 1 [
+    (buf.validate.field).repeated.min_items=1,(buf.validate.field).repeated.max_items=125
+  ];
 }
 
 message ReadHoldingRegistersRequest {
