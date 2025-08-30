@@ -8,16 +8,24 @@ import "buf/validate/validate.proto";
 
 
 // ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client
+// Implementation guided by the documentation of the Modbus protocol here: https://www.modbustools.com/modbus.html
 service ModbusService {
   rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
 
-  rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse);
+  rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse) {
+    option idempotency_level = IDEMPOTENT;
+  };
   rpc ReadCoils(ReadCoilsRequest) returns (ReadCoilsResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
-  rpc ReadDiscreteInputs(ReadDiscreteInputsRequest) returns (ReadDiscreteInputsResponse);
+  rpc ReadDiscreteInputs(ReadDiscreteInputsRequest) returns (ReadDiscreteInputsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  };
+  rpc WriteSingleCoil(WriteSingleCoilRequest) returns (WriteSingleCoilResponse) {
+    option idempotency_level = IDEMPOTENT;
+  }
 }
 
 message ReadHoldingRegistersRequest {
@@ -99,6 +107,12 @@ message ReadDiscreteInputsResponse {
     (buf.validate.field).repeated.max_items=2000
   ];
 }
+
+message WriteSingleCoilRequest {
+  BooleanAddress coil = 1;
+}
+
+message WriteSingleCoilResponse {}
 
 message BooleanAddress {
   // The address of the coil or discrete input

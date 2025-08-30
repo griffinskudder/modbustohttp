@@ -142,6 +142,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadDiscreteInputsResponse'
+  /modbustohttp.v1alpha1.ModbusService/WriteSingleCoil:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: WriteSingleCoil
+      operationId: modbustohttp.v1alpha1.ModbusService.WriteSingleCoil
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteSingleCoilRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteSingleCoilResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -323,6 +358,18 @@ components:
       title: Register
       additionalProperties: false
       description: A modbus register value
+    modbustohttp.v1alpha1.WriteSingleCoilRequest:
+      type: object
+      properties:
+        coil:
+          title: coil
+          $ref: '#/components/schemas/modbustohttp.v1alpha1.BooleanAddress'
+      title: WriteSingleCoilRequest
+      additionalProperties: false
+    modbustohttp.v1alpha1.WriteSingleCoilResponse:
+      type: object
+      title: WriteSingleCoilResponse
+      additionalProperties: false
     modbustohttp.v1alpha1.WriteSingleRegisterRequest:
       type: object
       properties:

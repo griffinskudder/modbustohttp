@@ -126,6 +126,33 @@ func (s Service) ReadDiscreteInputs(
 	return connect.NewResponse(&response), nil
 }
 
+func (s Service) WriteSingleCoil(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.WriteSingleCoilRequest],
+) (*connect.Response[modbusv1alpha1.WriteSingleCoilResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+	var value uint16
+	switch req.Msg.GetCoil().Value {
+	case true:
+		value = 0xFF00
+	case false:
+		value = 0x0000
+	}
+
+	_, err = client.WriteSingleCoil(
+		uint16(req.Msg.GetCoil().Address),
+		value,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&modbusv1alpha1.WriteSingleCoilResponse{}), nil
+}
+
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {
 	return &Service{
 		modbusHandler,
