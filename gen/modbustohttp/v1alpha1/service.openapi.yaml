@@ -153,6 +153,7 @@ components:
           maximum: 65535
           minimum: 0
           description: |
+            The address of the coil or discrete input
             uint32.gte = 0
             uint32.gte_lt = 0
             uint32.gte_lt_exclusive = 0
@@ -162,6 +163,7 @@ components:
         value:
           type: boolean
           title: value
+          description: The value of the coil or discrete input
       title: BooleanAddress
       additionalProperties: false
     modbustohttp.v1alpha1.ReadCoilsRequest:
@@ -173,6 +175,7 @@ components:
           maximum: 65535
           minimum: 0
           description: |
+            The address to start reading from
             uint32.gte = 0
             uint32.gte_lt = 0
             uint32.gte_lt_exclusive = 0
@@ -185,6 +188,7 @@ components:
           maximum: 2000
           minimum: 1
           description: |
+            The quantity of registers to read starting from address
             uint32.gte = 1
             uint32.gte_lt = 1
             uint32.gte_lt_exclusive = 1
@@ -216,6 +220,7 @@ components:
           maximum: 65535
           minimum: 0
           description: |
+            The address to start reading from
             uint32.gte = 0
             uint32.gte_lt = 0
             uint32.gte_lt_exclusive = 0
@@ -228,6 +233,7 @@ components:
           maximum: 2000
           minimum: 1
           description: |
+            The quantity of registers to read starting from address
             uint32.gte = 1
             uint32.gte_lt = 1
             uint32.gte_lt_exclusive = 1
@@ -299,6 +305,7 @@ components:
           title: address
           maximum: 65535
           description: |
+            The address of the register
             uint32.lte = 65535
         value:
           type: integer
@@ -306,6 +313,7 @@ components:
           maximum: 65535
           minimum: 0
           description: |
+            The value of the register
             uint32.gte = 0
             uint32.gte_lt = 0
             uint32.gte_lt_exclusive = 0
@@ -400,3 +408,4 @@ components:
 security: []
 tags:
   - name: modbustohttp.v1alpha1.ModbusService
+    description: 'ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client'

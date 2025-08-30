@@ -7,7 +7,7 @@ option go_package = "modbustohttp/gen/modbustohttp/v1alpha1";
 import "buf/validate/validate.proto";
 
 
-
+// ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client
 service ModbusService {
   rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse);
   rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse);
@@ -46,10 +46,12 @@ message WriteSingleRegisterRequest {
 message WriteSingleRegisterResponse {}
 
 message ReadCoilsRequest {
+  // The address to start reading from
   uint32 address = 1 [
     (buf.validate.field).uint32.lte=65535,
     (buf.validate.field).uint32.gte=0
   ];
+  // The quantity of registers to read starting from address
   uint32 quantity = 2 [
     (buf.validate.field).uint32.lte=2000,
     (buf.validate.field).uint32.gte=1
@@ -69,10 +71,12 @@ message ReadCoilsResponse {
 }
 
 message ReadDiscreteInputsRequest {
+  // The address to start reading from
   uint32 address = 1 [
     (buf.validate.field).uint32.lte=65535,
     (buf.validate.field).uint32.gte=0
   ];
+  // The quantity of registers to read starting from address
   uint32 quantity = 2 [
     (buf.validate.field).uint32.lte=2000,
     (buf.validate.field).uint32.gte=1
@@ -92,19 +96,23 @@ message ReadDiscreteInputsResponse {
 }
 
 message BooleanAddress {
+  // The address of the coil or discrete input
   uint32 address = 1 [
     (buf.validate.field).uint32.lte = 65535,
     (buf.validate.field).uint32.gte = 0
   ];
+  // The value of the coil or discrete input
   bool value = 2;
 }
 
 
 // A modbus register value
 message Register {
+  // The address of the register
   uint32 address = 1 [
     (buf.validate.field).uint32.lte = 65535
   ];
+  // The value of the register
   uint32 value = 2 [
     (buf.validate.field).uint32.gte = 0, (buf.validate.field).uint32.lte = 65535
   ];

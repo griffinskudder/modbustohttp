@@ -203,9 +203,11 @@ func (*WriteSingleRegisterResponse) Descriptor() ([]byte, []int) {
 }
 
 type ReadCoilsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       uint32                 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	Quantity      uint32                 `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The address to start reading from
+	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
+	// The quantity of registers to read starting from address
+	Quantity      uint32 `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -299,9 +301,11 @@ func (x *ReadCoilsResponse) GetCoils() []*BooleanAddress {
 }
 
 type ReadDiscreteInputsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       uint32                 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	Quantity      uint32                 `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The address to start reading from
+	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
+	// The quantity of registers to read starting from address
+	Quantity      uint32 `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -395,9 +399,11 @@ func (x *ReadDiscreteInputsResponse) GetInputs() []*BooleanAddress {
 }
 
 type BooleanAddress struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       uint32                 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	Value         bool                   `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The address of the coil or discrete input
+	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
+	// The value of the coil or discrete input
+	Value         bool `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -448,9 +454,11 @@ func (x *BooleanAddress) GetValue() bool {
 
 // A modbus register value
 type Register struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       uint32                 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	Value         uint32                 `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The address of the register
+	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
+	// The value of the register
+	Value         uint32 `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
