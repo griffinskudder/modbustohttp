@@ -69,6 +69,7 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			httpClient,
 			baseURL+ModbusServiceReadHoldingRegistersProcedure,
 			connect.WithSchema(modbusServiceMethods.ByName("ReadHoldingRegisters")),
+			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
 		writeSingleRegister: connect.NewClient[v1alpha1.WriteSingleRegisterRequest, v1alpha1.WriteSingleRegisterResponse](
@@ -81,6 +82,7 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			httpClient,
 			baseURL+ModbusServiceReadCoilsProcedure,
 			connect.WithSchema(modbusServiceMethods.ByName("ReadCoils")),
+			connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 			connect.WithClientOptions(opts...),
 		),
 		readDiscreteInputs: connect.NewClient[v1alpha1.ReadDiscreteInputsRequest, v1alpha1.ReadDiscreteInputsResponse](
@@ -139,6 +141,7 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 		ModbusServiceReadHoldingRegistersProcedure,
 		svc.ReadHoldingRegisters,
 		connect.WithSchema(modbusServiceMethods.ByName("ReadHoldingRegisters")),
+		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
 	modbusServiceWriteSingleRegisterHandler := connect.NewUnaryHandler(
@@ -151,6 +154,7 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 		ModbusServiceReadCoilsProcedure,
 		svc.ReadCoils,
 		connect.WithSchema(modbusServiceMethods.ByName("ReadCoils")),
+		connect.WithIdempotency(connect.IdempotencyNoSideEffects),
 		connect.WithHandlerOptions(opts...),
 	)
 	modbusServiceReadDiscreteInputsHandler := connect.NewUnaryHandler(

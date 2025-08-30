@@ -9,9 +9,14 @@ import "buf/validate/validate.proto";
 
 // ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client
 service ModbusService {
-  rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse);
+  rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  };
+
   rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse);
-  rpc ReadCoils(ReadCoilsRequest) returns (ReadCoilsResponse);
+  rpc ReadCoils(ReadCoilsRequest) returns (ReadCoilsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  };
   rpc ReadDiscreteInputs(ReadDiscreteInputsRequest) returns (ReadDiscreteInputsResponse);
 }
 

@@ -542,11 +542,11 @@ const file_modbustohttp_v1alpha1_service_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\bR\x05value\"R\n" +
 	"\bRegister\x12#\n" +
 	"\aaddress\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\aaddress\x12!\n" +
-	"\x05value\x18\x02 \x01(\rB\v\xbaH\b*\x06\x18\xff\xff\x03(\x00R\x05value2\xe9\x03\n" +
-	"\rModbusService\x12\x7f\n" +
-	"\x14ReadHoldingRegisters\x122.modbustohttp.v1alpha1.ReadHoldingRegistersRequest\x1a3.modbustohttp.v1alpha1.ReadHoldingRegistersResponse\x12|\n" +
-	"\x13WriteSingleRegister\x121.modbustohttp.v1alpha1.WriteSingleRegisterRequest\x1a2.modbustohttp.v1alpha1.WriteSingleRegisterResponse\x12^\n" +
-	"\tReadCoils\x12'.modbustohttp.v1alpha1.ReadCoilsRequest\x1a(.modbustohttp.v1alpha1.ReadCoilsResponse\x12y\n" +
+	"\x05value\x18\x02 \x01(\rB\v\xbaH\b*\x06\x18\xff\xff\x03(\x00R\x05value2\xf4\x03\n" +
+	"\rModbusService\x12\x84\x01\n" +
+	"\x14ReadHoldingRegisters\x122.modbustohttp.v1alpha1.ReadHoldingRegistersRequest\x1a3.modbustohttp.v1alpha1.ReadHoldingRegistersResponse\"\x03\x90\x02\x01\x12|\n" +
+	"\x13WriteSingleRegister\x121.modbustohttp.v1alpha1.WriteSingleRegisterRequest\x1a2.modbustohttp.v1alpha1.WriteSingleRegisterResponse\x12c\n" +
+	"\tReadCoils\x12'.modbustohttp.v1alpha1.ReadCoilsRequest\x1a(.modbustohttp.v1alpha1.ReadCoilsResponse\"\x03\x90\x02\x01\x12y\n" +
 	"\x12ReadDiscreteInputs\x120.modbustohttp.v1alpha1.ReadDiscreteInputsRequest\x1a1.modbustohttp.v1alpha1.ReadDiscreteInputsResponseB\xc6\x01\n" +
 	"\x19com.modbustohttp.v1alpha1B\fServiceProtoP\x01Z&modbustohttp/gen/modbustohttp/v1alpha1\xa2\x02\x03MXX\xaa\x02\x15Modbustohttp.V1alpha1\xca\x02\x15Modbustohttp\\V1alpha1\xe2\x02!Modbustohttp\\V1alpha1\\GPBMetadata\xea\x02\x16Modbustohttp::V1alpha1b\x06proto3"
 
