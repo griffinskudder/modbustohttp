@@ -8,6 +8,8 @@ plugins:
   - remote: buf.build/connectrpc/go
     out: gen
     opt: paths=source_relative
+  - local: [ "go", "run", "github.com/sudorandom/protoc-gen-connect-openapi@latest" ]
+    out: gen
 managed:
   enabled: true
   disable:

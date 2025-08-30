@@ -2,60 +2,77 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"modbustohttp/config"
+	"log/slog"
+	"modbustohttp/internal/interceptors"
+	"modbustohttp/internal/modbusservice"
 	"net/http"
 	"os"
 	"time"
 
+	"modbustohttp/config"
+	"modbustohttp/gen/modbustohttp/v1alpha1/v1alpha1connect"
+
+	"connectrpc.com/connect"
+	"connectrpc.com/grpcreflect"
+	"connectrpc.com/validate"
 	"github.com/goburrow/modbus"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 )
 
-type Middleware func(handler http.Handler) http.Handler
-
-type ModbusToHTTPServer struct {
-	httpConfig config.HTTP
-	middleware []Middleware
-	handler    *modbus.TCPClientHandler
-	mux        *http.ServeMux
-}
-
-func (mts *ModbusToHTTPServer) ListenAndServe() error {
-	for route, routeHandler := range Routes {
-		mts.mux.HandleFunc(route, routeHandler(mts.handler))
-	}
-	var mux2 http.Handler = mts.mux
-	for _, wrapper := range mts.middleware {
-		mux2 = wrapper(mux2)
-	}
-	return http.ListenAndServe(fmt.Sprintf(":%d", mts.httpConfig.Port), mux2)
-}
-
-func NewModbusToHTTPServer(httpConfig config.HTTP, mux *http.ServeMux, handler *modbus.TCPClientHandler, middleware []Middleware) *ModbusToHTTPServer {
-	return &ModbusToHTTPServer{
-		httpConfig: httpConfig,
-		middleware: middleware,
-		handler:    handler,
-		mux:        mux,
-	}
-}
-
 func main() {
+	addr := "localhost:8080"
 	appConfig, err := config.LoadAppConfig("config.json")
 	if err != nil {
 		panic(err)
 	}
 
+	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
 	handler := modbus.NewTCPClientHandler(fmt.Sprintf("%s:%d", appConfig.Modbus.Host, appConfig.Modbus.Port))
 	handler.Timeout = 10 * time.Second
 	handler.SlaveId = appConfig.Modbus.SlaveID
-	handler.Logger = log.New(os.Stdout, "", log.LstdFlags|log.Lmicroseconds)
+	modbusServer := modbusservice.NewService(handler)
 	mux := http.NewServeMux()
 
-	middleware := []Middleware{
-		LogMiddleware,
+	// Create the validation interceptor provided by connectrpc.com/validate.
+	validateInterceptor, err := validate.NewInterceptor()
+	if err != nil {
+		slog.Error("error creating interceptor",
+			slog.String("error", err.Error()),
+		)
+		return
 	}
-	server := NewModbusToHTTPServer(appConfig.HTTP, mux, handler, middleware)
-	fmt.Printf("Server starting on port %d...\n", appConfig.HTTP.Port)
-	log.Fatal(server.ListenAndServe())
+
+	loggingInterceptor := interceptors.NewLoggingInterceptor(structuredLogger)
+
+	mux.Handle(v1alpha1connect.NewModbusServiceHandler(
+		modbusServer,
+		connect.WithInterceptors(validateInterceptor, loggingInterceptor),
+	))
+
+	names := []string{v1alpha1connect.ModbusServiceName}
+
+	reflector := grpcreflect.NewReflector(
+		grpcreflect.NamerFunc(
+			func() []string { return names },
+		),
+	)
+
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+
+	slog.Info("starting modbus server", slog.String("addr", addr))
+	server := &http.Server{
+		Addr:              addr,
+		ReadHeaderTimeout: 3 * time.Second,
+		// Use h2c so we can serve HTTP/2 without TLS.
+		Handler: h2c.NewHandler(mux, &http2.Server{}),
+	}
+
+	if err := server.ListenAndServe(); err != nil {
+		slog.Error("error running application",
+			slog.String("error", err.Error()),
+		)
+	}
 }

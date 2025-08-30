@@ -5,7 +5,6 @@ package modbustohttp.v1alpha1;
 option go_package = "modbustohttp/gen/modbustohttp/v1alpha1";
 
 import "buf/validate/validate.proto";
-import "modbustohttp/v1alpha1/types.proto";
 
 
 
@@ -38,3 +37,14 @@ message WriteSingleRegisterRequest {
 }
 
 message WriteSingleRegisterResponse {}
+
+
+// A modbus register value
+message Register {
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535
+  ];
+  uint32 value = 2 [
+    (buf.validate.field).uint32.gte = 0, (buf.validate.field).uint32.lte = 65535
+  ];
+}
