@@ -2,7 +2,6 @@ package modbusservice
 
 import (
 	"context"
-	"encoding/binary"
 	"modbustohttp/internal/utils"
 
 	"connectrpc.com/connect"
@@ -32,15 +31,7 @@ func (s Service) ReadHoldingRegisters(
 		return nil, err
 	}
 
-	registers := make([]*modbusv1alpha1.Register, len(modbusData)/2)
-	for i := 0; i < len(modbusData); i = i + 2 {
-		bytes := modbusData[i : i+2]
-		registerValue := binary.BigEndian.Uint16(bytes[:2])
-		registers[i/2] = &modbusv1alpha1.Register{
-			Address: uint32(i/2) + req.Msg.GetAddress(),
-			Value:   uint32(registerValue),
-		}
-	}
+	registers := MapByteArrayToRegisters(modbusData, req.Msg.GetAddress())
 	return connect.NewResponse(&modbusv1alpha1.ReadHoldingRegistersResponse{Registers: registers}), nil
 }
 
@@ -75,19 +66,7 @@ func (s Service) ReadCoils(
 	if err != nil {
 		return nil, err
 	}
-	coils := make([]*modbusv1alpha1.BooleanAddress, req.Msg.GetQuantity())
-	for i, dataByte := range data {
-		bits := utils.ByteToBoolArray(dataByte)
-		for j, bit := range bits {
-			if req.Msg.GetAddress()+uint32(i+j) > req.Msg.GetQuantity() {
-				break
-			}
-			coils[i+j] = &modbusv1alpha1.BooleanAddress{
-				Address: req.Msg.GetAddress() + uint32(i+j),
-				Value:   bit,
-			}
-		}
-	}
+	coils := MapByteArrayToBooleanAddress(data, req.Msg.GetAddress(), req.Msg.GetQuantity())
 	response := modbusv1alpha1.ReadCoilsResponse{Coils: coils}
 	return connect.NewResponse(&response), nil
 }
@@ -107,19 +86,7 @@ func (s Service) ReadDiscreteInputs(
 		return nil, err
 	}
 
-	discreteInputs := make([]*modbusv1alpha1.BooleanAddress, req.Msg.GetQuantity())
-	for i, dataByte := range data {
-		bits := utils.ByteToBoolArray(dataByte)
-		for j, bit := range bits {
-			if req.Msg.GetAddress()+uint32(i+j) > req.Msg.GetQuantity() {
-				break
-			}
-			discreteInputs[i+j] = &modbusv1alpha1.BooleanAddress{
-				Address: req.Msg.GetAddress() + uint32(i+j),
-				Value:   bit,
-			}
-		}
-	}
+	discreteInputs := MapByteArrayToBooleanAddress(data, req.Msg.GetAddress(), req.Msg.GetQuantity())
 	response := modbusv1alpha1.ReadDiscreteInputsResponse{
 		Inputs: discreteInputs,
 	}
@@ -151,6 +118,23 @@ func (s Service) WriteSingleCoil(
 		return nil, err
 	}
 	return connect.NewResponse(&modbusv1alpha1.WriteSingleCoilResponse{}), nil
+}
+
+func (s Service) WriteMultipleCoils(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.WriteMultipleCoilsRequest],
+) (*connect.Response[modbusv1alpha1.WriteMultipleCoilsResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+	data := utils.BoolArrayToByteArray(req.Msg.GetValues())
+	_, err = client.WriteMultipleCoils(uint16(req.Msg.GetAddress()), uint16(len(req.Msg.GetValues())), data)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&modbusv1alpha1.WriteMultipleCoilsResponse{}), nil
 }
 
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {

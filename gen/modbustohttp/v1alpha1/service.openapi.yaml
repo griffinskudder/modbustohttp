@@ -177,6 +177,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteSingleCoilResponse'
+  /modbustohttp.v1alpha1.ModbusService/WriteMultipleCoils:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: WriteMultipleCoils
+      operationId: modbustohttp.v1alpha1.ModbusService.WriteMultipleCoils
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleCoilsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleCoilsResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -358,6 +393,34 @@ components:
       title: Register
       additionalProperties: false
       description: A modbus register value
+    modbustohttp.v1alpha1.WriteMultipleCoilsRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          minimum: 0
+          description: |
+            uint32.gte = 0
+            uint32.gte_lt = 0
+            uint32.gte_lt_exclusive = 0
+            uint32.gte_lte = 0
+            uint32.gte_lte_exclusive = 0
+            uint32.lte = 65535
+        values:
+          type: array
+          items:
+            type: boolean
+          title: values
+      title: WriteMultipleCoilsRequest
+      additionalProperties: false
+      description: |
+        not.out.of.range // address + length of values must not be greater than 65536
+    modbustohttp.v1alpha1.WriteMultipleCoilsResponse:
+      type: object
+      title: WriteMultipleCoilsResponse
+      additionalProperties: false
     modbustohttp.v1alpha1.WriteSingleCoilRequest:
       type: object
       properties:
@@ -455,4 +518,4 @@ components:
 security: []
 tags:
   - name: modbustohttp.v1alpha1.ModbusService
-    description: 'ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client'
+    description: "ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client\r\n Implementation guided by the documentation of the Modbus protocol here: https://www.modbustools.com/modbus.html"
