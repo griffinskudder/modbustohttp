@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"modbustohttp/config"
 	"net/http"
 	"os"
 	"time"
@@ -13,7 +14,7 @@ import (
 type Middleware func(handler http.Handler) http.Handler
 
 type ModbusToHTTPServer struct {
-	httpConfig HTTP
+	httpConfig config.HTTP
 	middleware []Middleware
 	handler    *modbus.TCPClientHandler
 	mux        *http.ServeMux
@@ -30,7 +31,7 @@ func (mts *ModbusToHTTPServer) ListenAndServe() error {
 	return http.ListenAndServe(fmt.Sprintf(":%d", mts.httpConfig.Port), mux2)
 }
 
-func NewModbusToHTTPServer(httpConfig HTTP, mux *http.ServeMux, handler *modbus.TCPClientHandler, middleware []Middleware) *ModbusToHTTPServer {
+func NewModbusToHTTPServer(httpConfig config.HTTP, mux *http.ServeMux, handler *modbus.TCPClientHandler, middleware []Middleware) *ModbusToHTTPServer {
 	return &ModbusToHTTPServer{
 		httpConfig: httpConfig,
 		middleware: middleware,
@@ -40,7 +41,7 @@ func NewModbusToHTTPServer(httpConfig HTTP, mux *http.ServeMux, handler *modbus.
 }
 
 func main() {
-	appConfig, err := LoadAppConfig("config.json")
+	appConfig, err := config.LoadAppConfig("config.json")
 	if err != nil {
 		panic(err)
 	}
