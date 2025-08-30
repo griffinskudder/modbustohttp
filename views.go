@@ -3,41 +3,15 @@ package main
 import (
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/goburrow/modbus"
 )
 
-func Hello(handler *modbus.TCPClientHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		client := modbus.NewClient(handler)
-		err := handler.Connect()
-		if err != nil {
-			return
-		}
-		defer func(handler *modbus.TCPClientHandler) {
-			err := handler.Close()
-			if err != nil {
-				return
-			}
-		}(handler)
-		registers, err := client.ReadHoldingRegisters(1, 5)
-		_, err = fmt.Fprintln(w, registers)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, err := w.Write([]byte(err.Error()))
-			if err != nil {
-				return
-			}
-		}
-	}
-}
-
 // ReadHoldingRegisters reads the contents of a contiguous block of
 // holding registers in the configured remove device and returns register values.
 func ReadHoldingRegisters(handler *modbus.TCPClientHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, request *http.Request) {
+	return RequireHTTPMethods(http.MethodPost)(func(w http.ResponseWriter, request *http.Request) {
 		client := modbus.NewClient(handler)
 		err := handler.Connect()
 		if err != nil {
@@ -82,13 +56,13 @@ func ReadHoldingRegisters(handler *modbus.TCPClientHandler) http.HandlerFunc {
 				return
 			}
 		}
-	}
+	})
 }
 
 // WriteSingleRegister writes a single holding register in a remote
 // device and returns register value.
 func WriteSingleRegister(handler *modbus.TCPClientHandler) http.HandlerFunc {
-	return func(w http.ResponseWriter, request *http.Request) {
+	return RequireHTTPMethods(http.MethodPost)(func(w http.ResponseWriter, request *http.Request) {
 		client := modbus.NewClient(handler)
 		err := handler.Connect()
 		if err != nil {
@@ -119,5 +93,5 @@ func WriteSingleRegister(handler *modbus.TCPClientHandler) http.HandlerFunc {
 			}
 		}
 		w.WriteHeader(http.StatusOK)
-	}
+	})
 }
