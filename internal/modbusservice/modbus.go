@@ -2,6 +2,7 @@ package modbusservice
 
 import (
 	"context"
+	"encoding/binary"
 	"modbustohttp/internal/utils"
 
 	"connectrpc.com/connect"
@@ -156,6 +157,26 @@ func (s Service) ReadInputRegisters(
 
 	registers := MapByteArrayToRegisters(modbusData, req.Msg.GetAddress())
 	return connect.NewResponse(&modbusv1alpha1.ReadInputRegistersResponse{Registers: registers}), nil
+}
+
+func (s Service) WriteMultipleRegisters(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.WriteMultipleRegistersRequest],
+) (*connect.Response[modbusv1alpha1.WriteMultipleRegistersResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+	data := make([]byte, len(req.Msg.GetValues())*2)
+	for i, value := range req.Msg.GetValues() {
+		binary.BigEndian.PutUint16(data[i*2:i*2+2], uint16(value))
+	}
+	_, err = client.WriteMultipleRegisters(uint16(req.Msg.GetAddress()), uint16(len(req.Msg.GetValues())), data)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&modbusv1alpha1.WriteMultipleRegistersResponse{}), nil
 }
 
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {

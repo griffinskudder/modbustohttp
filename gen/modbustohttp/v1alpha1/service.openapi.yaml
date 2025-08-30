@@ -247,6 +247,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadInputRegistersResponse'
+  /modbustohttp.v1alpha1.ModbusService/WriteMultipleRegisters:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: WriteMultipleRegisters
+      operationId: modbustohttp.v1alpha1.ModbusService.WriteMultipleRegisters
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleRegistersRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleRegistersResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -496,6 +531,32 @@ components:
     modbustohttp.v1alpha1.WriteMultipleCoilsResponse:
       type: object
       title: WriteMultipleCoilsResponse
+      additionalProperties: false
+    modbustohttp.v1alpha1.WriteMultipleRegistersRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          description: |
+            uint32.lte = 65535
+        values:
+          type: array
+          items:
+            type: integer
+            maxItems: 123
+            minItems: 1
+          title: values
+          maxItems: 123
+          minItems: 1
+      title: WriteMultipleRegistersRequest
+      additionalProperties: false
+      description: |
+        not.out.of.range // address + length of values must not be greater than 65536
+    modbustohttp.v1alpha1.WriteMultipleRegistersResponse:
+      type: object
+      title: WriteMultipleRegistersResponse
       additionalProperties: false
     modbustohttp.v1alpha1.WriteSingleCoilRequest:
       type: object
