@@ -1,7 +1,6 @@
 openapi: 3.1.0
 info:
   title: modbustohttp.v1alpha1
-  version: v1alpha1
 paths:
   /modbustohttp.v1alpha1.ModbusService/ReadHoldingRegisters:
     post:
@@ -73,8 +72,184 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteSingleRegisterResponse'
+  /modbustohttp.v1alpha1.ModbusService/ReadCoils:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadCoils
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadCoils
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadCoilsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadCoilsResponse'
+  /modbustohttp.v1alpha1.ModbusService/ReadDiscreteInputs:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadDiscreteInputs
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadDiscreteInputsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadDiscreteInputsResponse'
 components:
   schemas:
+    modbustohttp.v1alpha1.BooleanAddress:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          minimum: 0
+          description: |
+            uint32.gte = 0
+            uint32.gte_lt = 0
+            uint32.gte_lt_exclusive = 0
+            uint32.gte_lte = 0
+            uint32.gte_lte_exclusive = 0
+            uint32.lte = 65535
+        value:
+          type: boolean
+          title: value
+      title: BooleanAddress
+      additionalProperties: false
+    modbustohttp.v1alpha1.ReadCoilsRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          minimum: 0
+          description: |
+            uint32.gte = 0
+            uint32.gte_lt = 0
+            uint32.gte_lt_exclusive = 0
+            uint32.gte_lte = 0
+            uint32.gte_lte_exclusive = 0
+            uint32.lte = 65535
+        quantity:
+          type: integer
+          title: quantity
+          maximum: 2000
+          minimum: 1
+          description: |
+            uint32.gte = 1
+            uint32.gte_lt = 1
+            uint32.gte_lt_exclusive = 1
+            uint32.gte_lte = 1
+            uint32.gte_lte_exclusive = 1
+            uint32.lte = 2000
+      title: ReadCoilsRequest
+      additionalProperties: false
+      description: |
+        not.out.of.range // address + quantity must not be greater than 65536
+    modbustohttp.v1alpha1.ReadCoilsResponse:
+      type: object
+      properties:
+        coils:
+          type: array
+          items:
+            $ref: '#/components/schemas/modbustohttp.v1alpha1.BooleanAddress'
+          title: coils
+          maxItems: 2000
+          minItems: 1
+      title: ReadCoilsResponse
+      additionalProperties: false
+    modbustohttp.v1alpha1.ReadDiscreteInputsRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          minimum: 0
+          description: |
+            uint32.gte = 0
+            uint32.gte_lt = 0
+            uint32.gte_lt_exclusive = 0
+            uint32.gte_lte = 0
+            uint32.gte_lte_exclusive = 0
+            uint32.lte = 65535
+        quantity:
+          type: integer
+          title: quantity
+          maximum: 2000
+          minimum: 1
+          description: |
+            uint32.gte = 1
+            uint32.gte_lt = 1
+            uint32.gte_lt_exclusive = 1
+            uint32.gte_lte = 1
+            uint32.gte_lte_exclusive = 1
+            uint32.lte = 2000
+      title: ReadDiscreteInputsRequest
+      additionalProperties: false
+      description: |
+        not.out.of.range // address + quantity must not be greater than 65536
+    modbustohttp.v1alpha1.ReadDiscreteInputsResponse:
+      type: object
+      properties:
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/modbustohttp.v1alpha1.BooleanAddress'
+          title: inputs
+          maxItems: 2000
+          minItems: 1
+      title: ReadDiscreteInputsResponse
+      additionalProperties: false
     modbustohttp.v1alpha1.ReadHoldingRegistersRequest:
       type: object
       properties:
@@ -101,6 +276,8 @@ components:
           nullable: true
       title: ReadHoldingRegistersRequest
       additionalProperties: false
+      description: |
+        not.out.of.range // address + quantity must not be greater than 65536
     modbustohttp.v1alpha1.ReadHoldingRegistersResponse:
       type: object
       properties:

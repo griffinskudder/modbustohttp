@@ -11,6 +11,8 @@ import "buf/validate/validate.proto";
 service ModbusService {
   rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse);
   rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse);
+  rpc ReadCoils(ReadCoilsRequest) returns (ReadCoilsResponse);
+  rpc ReadDiscreteInputs(ReadDiscreteInputsRequest) returns (ReadDiscreteInputsResponse);
 }
 
 message ReadHoldingRegistersRequest {
@@ -22,6 +24,11 @@ message ReadHoldingRegistersRequest {
   optional uint32 quantity = 2 [
     (buf.validate.field).uint32.lte=125,(buf.validate.field).uint32.gt=0
   ];
+  option (buf.validate.message).cel = {
+    id: "not.out.of.range"
+    message: "address + quantity must not be greater than 65536"
+    expression: "this.address + this.quantity <= 65536"
+  };
 }
 
 message ReadHoldingRegistersResponse {
@@ -37,6 +44,60 @@ message WriteSingleRegisterRequest {
 }
 
 message WriteSingleRegisterResponse {}
+
+message ReadCoilsRequest {
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte=65535,
+    (buf.validate.field).uint32.gte=0
+  ];
+  uint32 quantity = 2 [
+    (buf.validate.field).uint32.lte=2000,
+    (buf.validate.field).uint32.gte=1
+  ];
+  option (buf.validate.message).cel = {
+    id: "not.out.of.range"
+    message: "address + quantity must not be greater than 65536"
+    expression: "this.address + this.quantity <= 65536"
+  };
+}
+
+message ReadCoilsResponse {
+  repeated BooleanAddress coils = 1 [
+    (buf.validate.field).repeated.min_items=1,
+    (buf.validate.field).repeated.max_items=2000
+  ];
+}
+
+message ReadDiscreteInputsRequest {
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte=65535,
+    (buf.validate.field).uint32.gte=0
+  ];
+  uint32 quantity = 2 [
+    (buf.validate.field).uint32.lte=2000,
+    (buf.validate.field).uint32.gte=1
+  ];
+  option (buf.validate.message).cel = {
+    id: "not.out.of.range"
+    message: "address + quantity must not be greater than 65536"
+    expression: "this.address + this.quantity <= 65536"
+  };
+}
+
+message ReadDiscreteInputsResponse {
+  repeated BooleanAddress inputs = 1 [
+    (buf.validate.field).repeated.min_items=1,
+    (buf.validate.field).repeated.max_items=2000
+  ];
+}
+
+message BooleanAddress {
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535,
+    (buf.validate.field).uint32.gte = 0
+  ];
+  bool value = 2;
+}
 
 
 // A modbus register value

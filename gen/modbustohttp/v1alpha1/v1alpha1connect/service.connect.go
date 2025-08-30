@@ -39,12 +39,19 @@ const (
 	// ModbusServiceWriteSingleRegisterProcedure is the fully-qualified name of the ModbusService's
 	// WriteSingleRegister RPC.
 	ModbusServiceWriteSingleRegisterProcedure = "/modbustohttp.v1alpha1.ModbusService/WriteSingleRegister"
+	// ModbusServiceReadCoilsProcedure is the fully-qualified name of the ModbusService's ReadCoils RPC.
+	ModbusServiceReadCoilsProcedure = "/modbustohttp.v1alpha1.ModbusService/ReadCoils"
+	// ModbusServiceReadDiscreteInputsProcedure is the fully-qualified name of the ModbusService's
+	// ReadDiscreteInputs RPC.
+	ModbusServiceReadDiscreteInputsProcedure = "/modbustohttp.v1alpha1.ModbusService/ReadDiscreteInputs"
 )
 
 // ModbusServiceClient is a client for the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceClient interface {
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
 	WriteSingleRegister(context.Context, *connect.Request[v1alpha1.WriteSingleRegisterRequest]) (*connect.Response[v1alpha1.WriteSingleRegisterResponse], error)
+	ReadCoils(context.Context, *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error)
+	ReadDiscreteInputs(context.Context, *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error)
 }
 
 // NewModbusServiceClient constructs a client for the modbustohttp.v1alpha1.ModbusService service.
@@ -70,6 +77,18 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(modbusServiceMethods.ByName("WriteSingleRegister")),
 			connect.WithClientOptions(opts...),
 		),
+		readCoils: connect.NewClient[v1alpha1.ReadCoilsRequest, v1alpha1.ReadCoilsResponse](
+			httpClient,
+			baseURL+ModbusServiceReadCoilsProcedure,
+			connect.WithSchema(modbusServiceMethods.ByName("ReadCoils")),
+			connect.WithClientOptions(opts...),
+		),
+		readDiscreteInputs: connect.NewClient[v1alpha1.ReadDiscreteInputsRequest, v1alpha1.ReadDiscreteInputsResponse](
+			httpClient,
+			baseURL+ModbusServiceReadDiscreteInputsProcedure,
+			connect.WithSchema(modbusServiceMethods.ByName("ReadDiscreteInputs")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -77,6 +96,8 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 type modbusServiceClient struct {
 	readHoldingRegisters *connect.Client[v1alpha1.ReadHoldingRegistersRequest, v1alpha1.ReadHoldingRegistersResponse]
 	writeSingleRegister  *connect.Client[v1alpha1.WriteSingleRegisterRequest, v1alpha1.WriteSingleRegisterResponse]
+	readCoils            *connect.Client[v1alpha1.ReadCoilsRequest, v1alpha1.ReadCoilsResponse]
+	readDiscreteInputs   *connect.Client[v1alpha1.ReadDiscreteInputsRequest, v1alpha1.ReadDiscreteInputsResponse]
 }
 
 // ReadHoldingRegisters calls modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters.
@@ -89,10 +110,22 @@ func (c *modbusServiceClient) WriteSingleRegister(ctx context.Context, req *conn
 	return c.writeSingleRegister.CallUnary(ctx, req)
 }
 
+// ReadCoils calls modbustohttp.v1alpha1.ModbusService.ReadCoils.
+func (c *modbusServiceClient) ReadCoils(ctx context.Context, req *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error) {
+	return c.readCoils.CallUnary(ctx, req)
+}
+
+// ReadDiscreteInputs calls modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs.
+func (c *modbusServiceClient) ReadDiscreteInputs(ctx context.Context, req *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error) {
+	return c.readDiscreteInputs.CallUnary(ctx, req)
+}
+
 // ModbusServiceHandler is an implementation of the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceHandler interface {
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
 	WriteSingleRegister(context.Context, *connect.Request[v1alpha1.WriteSingleRegisterRequest]) (*connect.Response[v1alpha1.WriteSingleRegisterResponse], error)
+	ReadCoils(context.Context, *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error)
+	ReadDiscreteInputs(context.Context, *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error)
 }
 
 // NewModbusServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -114,12 +147,28 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(modbusServiceMethods.ByName("WriteSingleRegister")),
 		connect.WithHandlerOptions(opts...),
 	)
+	modbusServiceReadCoilsHandler := connect.NewUnaryHandler(
+		ModbusServiceReadCoilsProcedure,
+		svc.ReadCoils,
+		connect.WithSchema(modbusServiceMethods.ByName("ReadCoils")),
+		connect.WithHandlerOptions(opts...),
+	)
+	modbusServiceReadDiscreteInputsHandler := connect.NewUnaryHandler(
+		ModbusServiceReadDiscreteInputsProcedure,
+		svc.ReadDiscreteInputs,
+		connect.WithSchema(modbusServiceMethods.ByName("ReadDiscreteInputs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/modbustohttp.v1alpha1.ModbusService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ModbusServiceReadHoldingRegistersProcedure:
 			modbusServiceReadHoldingRegistersHandler.ServeHTTP(w, r)
 		case ModbusServiceWriteSingleRegisterProcedure:
 			modbusServiceWriteSingleRegisterHandler.ServeHTTP(w, r)
+		case ModbusServiceReadCoilsProcedure:
+			modbusServiceReadCoilsHandler.ServeHTTP(w, r)
+		case ModbusServiceReadDiscreteInputsProcedure:
+			modbusServiceReadDiscreteInputsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -135,4 +184,12 @@ func (UnimplementedModbusServiceHandler) ReadHoldingRegisters(context.Context, *
 
 func (UnimplementedModbusServiceHandler) WriteSingleRegister(context.Context, *connect.Request[v1alpha1.WriteSingleRegisterRequest]) (*connect.Response[v1alpha1.WriteSingleRegisterResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.WriteSingleRegister is not implemented"))
+}
+
+func (UnimplementedModbusServiceHandler) ReadCoils(context.Context, *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.ReadCoils is not implemented"))
+}
+
+func (UnimplementedModbusServiceHandler) ReadDiscreteInputs(context.Context, *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs is not implemented"))
 }
