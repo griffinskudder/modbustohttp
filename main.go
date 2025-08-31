@@ -95,7 +95,11 @@ func setupServer(addr string, mux *http.ServeMux, logger *slog.Logger) *http.Ser
 }
 
 func main() {
-	appConfig, err := config.LoadAppConfig("config.json")
+	configLocation := os.Getenv("CONFIG_FILE")
+	if configLocation == "" {
+		configLocation = "config.json"
+	}
+	appConfig, err := config.LoadAppConfig(configLocation)
 	if err != nil {
 		panic(err)
 	}

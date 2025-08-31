@@ -44,7 +44,7 @@ multiple clients attempt to write to the same register simultaneously.
 
 ## Config
 
-The server can be configured using a json file. An example config file can be found [here](./config.json).
+The server can be configured using a json file. An example config file can be found [here](config.example.json).
 
 ```json
 {
