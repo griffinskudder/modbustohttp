@@ -35,6 +35,7 @@ service ModbusService {
   rpc WriteMultipleRegisters(WriteMultipleRegistersRequest) returns (WriteMultipleRegistersResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  rpc WriteBitInRegister(WriteBitInRegisterRequest) returns (WriteBitInRegisterResponse) {};
 }
 
 message ReadInputRegistersRequest {
@@ -176,6 +177,24 @@ message WriteMultipleRegistersRequest {
 }
 
 message WriteMultipleRegistersResponse {}
+
+message WriteBitInRegisterRequest {
+  // The address of the register
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535
+  ];
+  // The bit to write in the register (0-15)
+  uint32 bit = 2 [
+    (buf.validate.field).uint32.lte = 15,
+    (buf.validate.field).uint32.gte = 0
+  ];
+  // The value of the bit to write
+  bool value = 3;
+}
+
+message WriteBitInRegisterResponse {
+  Register register = 1;
+}
 
 message BooleanAddress {
   // The address of the coil or discrete input

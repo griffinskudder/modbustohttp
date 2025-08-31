@@ -179,6 +179,45 @@ func (s Service) WriteMultipleRegisters(
 	return connect.NewResponse(&modbusv1alpha1.WriteMultipleRegistersResponse{}), nil
 }
 
+func (s Service) WriteBitInRegister(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.WriteBitInRegisterRequest],
+) (*connect.Response[modbusv1alpha1.WriteBitInRegisterResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+
+	// Read the current value of the register
+	currentData, err := client.ReadHoldingRegisters(uint16(req.Msg.GetAddress()), 1)
+	if err != nil {
+		return nil, err
+	}
+	currentValue := binary.BigEndian.Uint16(currentData)
+
+	// Modify the specific bit
+	var newValue uint16
+	if req.Msg.GetValue() {
+		newValue = currentValue | (1 << req.Msg.GetBit())
+	} else {
+		newValue = currentValue & ^(1 << req.Msg.GetBit())
+	}
+
+	// Write the new value back to the register
+	_, err = client.WriteSingleRegister(uint16(req.Msg.GetAddress()), newValue)
+	if err != nil {
+		return nil, err
+	}
+
+	responseRegister := &modbusv1alpha1.Register{
+		Address: req.Msg.GetAddress(),
+		Value:   uint32(newValue),
+	}
+
+	return connect.NewResponse(&modbusv1alpha1.WriteBitInRegisterResponse{Register: responseRegister}), nil
+}
+
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {
 	return &Service{
 		modbusHandler,

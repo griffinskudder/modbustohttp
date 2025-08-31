@@ -56,6 +56,9 @@ const (
 	// ModbusServiceWriteMultipleRegistersProcedure is the fully-qualified name of the ModbusService's
 	// WriteMultipleRegisters RPC.
 	ModbusServiceWriteMultipleRegistersProcedure = "/modbustohttp.v1alpha1.ModbusService/WriteMultipleRegisters"
+	// ModbusServiceWriteBitInRegisterProcedure is the fully-qualified name of the ModbusService's
+	// WriteBitInRegister RPC.
+	ModbusServiceWriteBitInRegisterProcedure = "/modbustohttp.v1alpha1.ModbusService/WriteBitInRegister"
 )
 
 // ModbusServiceClient is a client for the modbustohttp.v1alpha1.ModbusService service.
@@ -68,6 +71,7 @@ type ModbusServiceClient interface {
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	WriteBitInRegister(context.Context, *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error)
 }
 
 // NewModbusServiceClient constructs a client for the modbustohttp.v1alpha1.ModbusService service.
@@ -137,6 +141,12 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithIdempotency(connect.IdempotencyIdempotent),
 			connect.WithClientOptions(opts...),
 		),
+		writeBitInRegister: connect.NewClient[v1alpha1.WriteBitInRegisterRequest, v1alpha1.WriteBitInRegisterResponse](
+			httpClient,
+			baseURL+ModbusServiceWriteBitInRegisterProcedure,
+			connect.WithSchema(modbusServiceMethods.ByName("WriteBitInRegister")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -150,6 +160,7 @@ type modbusServiceClient struct {
 	writeMultipleCoils     *connect.Client[v1alpha1.WriteMultipleCoilsRequest, v1alpha1.WriteMultipleCoilsResponse]
 	readInputRegisters     *connect.Client[v1alpha1.ReadInputRegistersRequest, v1alpha1.ReadInputRegistersResponse]
 	writeMultipleRegisters *connect.Client[v1alpha1.WriteMultipleRegistersRequest, v1alpha1.WriteMultipleRegistersResponse]
+	writeBitInRegister     *connect.Client[v1alpha1.WriteBitInRegisterRequest, v1alpha1.WriteBitInRegisterResponse]
 }
 
 // ReadHoldingRegisters calls modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters.
@@ -192,6 +203,11 @@ func (c *modbusServiceClient) WriteMultipleRegisters(ctx context.Context, req *c
 	return c.writeMultipleRegisters.CallUnary(ctx, req)
 }
 
+// WriteBitInRegister calls modbustohttp.v1alpha1.ModbusService.WriteBitInRegister.
+func (c *modbusServiceClient) WriteBitInRegister(ctx context.Context, req *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error) {
+	return c.writeBitInRegister.CallUnary(ctx, req)
+}
+
 // ModbusServiceHandler is an implementation of the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceHandler interface {
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
@@ -202,6 +218,7 @@ type ModbusServiceHandler interface {
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	WriteBitInRegister(context.Context, *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error)
 }
 
 // NewModbusServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -267,6 +284,12 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 		connect.WithIdempotency(connect.IdempotencyIdempotent),
 		connect.WithHandlerOptions(opts...),
 	)
+	modbusServiceWriteBitInRegisterHandler := connect.NewUnaryHandler(
+		ModbusServiceWriteBitInRegisterProcedure,
+		svc.WriteBitInRegister,
+		connect.WithSchema(modbusServiceMethods.ByName("WriteBitInRegister")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/modbustohttp.v1alpha1.ModbusService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ModbusServiceReadHoldingRegistersProcedure:
@@ -285,6 +308,8 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 			modbusServiceReadInputRegistersHandler.ServeHTTP(w, r)
 		case ModbusServiceWriteMultipleRegistersProcedure:
 			modbusServiceWriteMultipleRegistersHandler.ServeHTTP(w, r)
+		case ModbusServiceWriteBitInRegisterProcedure:
+			modbusServiceWriteBitInRegisterHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -324,4 +349,8 @@ func (UnimplementedModbusServiceHandler) ReadInputRegisters(context.Context, *co
 
 func (UnimplementedModbusServiceHandler) WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.WriteMultipleRegisters is not implemented"))
+}
+
+func (UnimplementedModbusServiceHandler) WriteBitInRegister(context.Context, *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.WriteBitInRegister is not implemented"))
 }

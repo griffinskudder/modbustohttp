@@ -1,6 +1,7 @@
 openapi: 3.1.0
 info:
   title: modbustohttp.v1alpha1
+  version: v1alpha1
 paths:
   /modbustohttp.v1alpha1.ModbusService/ReadHoldingRegisters:
     post:
@@ -282,6 +283,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleRegistersResponse'
+  /modbustohttp.v1alpha1.ModbusService/WriteBitInRegister:
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: WriteBitInRegister
+      operationId: modbustohttp.v1alpha1.ModbusService.WriteBitInRegister
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteBitInRegisterRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteBitInRegisterResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -504,6 +540,43 @@ components:
       title: Register
       additionalProperties: false
       description: A modbus register value
+    modbustohttp.v1alpha1.WriteBitInRegisterRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          description: |
+            The address of the register
+            uint32.lte = 65535
+        bit:
+          type: integer
+          title: bit
+          maximum: 15
+          minimum: 0
+          description: |
+            The bit to write in the register (0-15)
+            uint32.gte = 0
+            uint32.gte_lt = 0
+            uint32.gte_lt_exclusive = 0
+            uint32.gte_lte = 0
+            uint32.gte_lte_exclusive = 0
+            uint32.lte = 15
+        value:
+          type: boolean
+          title: value
+          description: The value of the bit to write
+      title: WriteBitInRegisterRequest
+      additionalProperties: false
+    modbustohttp.v1alpha1.WriteBitInRegisterResponse:
+      type: object
+      properties:
+        register:
+          title: register
+          $ref: '#/components/schemas/modbustohttp.v1alpha1.Register'
+      title: WriteBitInRegisterResponse
+      additionalProperties: false
     modbustohttp.v1alpha1.WriteMultipleCoilsRequest:
       type: object
       properties:
