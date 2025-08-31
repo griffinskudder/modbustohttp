@@ -66,7 +66,12 @@ func setupInterceptors(logger *slog.Logger) ([]connect.Interceptor, error) {
 
 }
 
-func setupServiceHandler(modbusServer *modbusservice.Service, mux *http.ServeMux, logger *slog.Logger, serviceInterceptors ...connect.Interceptor) {
+func setupServiceHandler(
+	modbusServer *modbusservice.Service,
+	mux *http.ServeMux,
+	logger *slog.Logger,
+	serviceInterceptors ...connect.Interceptor,
+) {
 	logger.Info("setting up service handler",
 		slog.Int("num_interceptors", len(serviceInterceptors)),
 	)
