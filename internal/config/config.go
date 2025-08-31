@@ -6,10 +6,25 @@ import (
 	"os"
 )
 
+type ModbusFunction string
+
+const (
+	ReadCoils               ModbusFunction = "ReadCoils"
+	ReadDiscreteInputs      ModbusFunction = "ReadDiscreteInputs"
+	ReadHoldingRegisters    ModbusFunction = "ReadHoldingRegisters"
+	ReadInputRegisters      ModbusFunction = "ReadInputRegisters"
+	WriteSingleCoil         ModbusFunction = "WriteSingleCoil"
+	WriteMultipleCoils      ModbusFunction = "WriteMultipleCoils"
+	WriteMultipleRegisters  ModbusFunction = "WriteMultipleRegisters"
+	WriteSingleRegister     ModbusFunction = "WriteSingleRegister"
+	MaskWriteSingleRegister ModbusFunction = "MaskWriteSingleRegister"
+)
+
 type Modbus struct {
-	Host    string `json:"host"`
-	Port    int    `json:"port"`
-	SlaveID byte   `json:"slaveID"`
+	Host               string           `json:"host"`
+	Port               int              `json:"port"`
+	SlaveID            byte             `json:"slaveID"`
+	FunctionsSupported []ModbusFunction `json:"functionsSupported"`
 }
 
 type HTTP struct {
@@ -32,6 +47,17 @@ func LoadAppConfig(path string) (*AppConfig, error) {
 					Host:    "localhost",
 					Port:    502,
 					SlaveID: 1,
+					FunctionsSupported: []ModbusFunction{
+						ReadCoils,
+						ReadDiscreteInputs,
+						ReadHoldingRegisters,
+						ReadInputRegisters,
+						WriteSingleCoil,
+						WriteMultipleCoils,
+						WriteMultipleRegisters,
+						WriteSingleRegister,
+						MaskWriteSingleRegister,
+					},
 				},
 				HTTP: HTTP{
 					Host: "localhost",

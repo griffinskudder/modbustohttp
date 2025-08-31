@@ -1,7 +1,17 @@
 {
   "modbus": {
     "host": "localhost",
-    "port": 502
+    "port": 502,
+    "functionsSupported": [
+        "readCoils",
+        "readDiscreteInputs",
+        "readHoldingRegisters",
+        "readInputRegisters",
+        "writeSingleCoil",
+        "writeSingleRegister",
+        "writeMultipleCoils",
+        "writeMultipleRegisters"
+    ]
   },
   "http": {
     "host": "localhost",

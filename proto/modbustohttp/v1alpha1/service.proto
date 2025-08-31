@@ -202,6 +202,4 @@ message WriteBitInRegisterRequest {
   bool value = 3;
 }
 
-message WriteBitInRegisterResponse {
-  Register register = 1;
-}
+message WriteBitInRegisterResponse {}

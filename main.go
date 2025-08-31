@@ -108,7 +108,7 @@ func main() {
 	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	handler := setupModbusHandler(appConfig, structuredLogger)
-	modbusServer := modbusservice.NewService(handler)
+	modbusServer := modbusservice.NewService(handler, &appConfig.Modbus)
 	mux := http.NewServeMux()
 
 	serviceInterceptors, err := setupInterceptors(structuredLogger)

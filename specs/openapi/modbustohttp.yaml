@@ -786,10 +786,6 @@ components:
       additionalProperties: false
     modbustohttp.v1alpha1.WriteBitInRegisterResponse:
       type: object
-      properties:
-        register:
-          title: register
-          $ref: '#/components/schemas/modbustohttp.v1alpha1.Register'
       title: WriteBitInRegisterResponse
       additionalProperties: false
     modbustohttp.v1alpha1.WriteMultipleCoilsRequest:
