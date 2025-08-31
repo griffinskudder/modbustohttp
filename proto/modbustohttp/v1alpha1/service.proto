@@ -35,6 +35,9 @@ service ModbusService {
   rpc WriteMultipleRegisters(WriteMultipleRegistersRequest) returns (WriteMultipleRegistersResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  rpc MaskWriteRegister(MaskWriteRegisterRequest) returns (MaskWriteRegisterResponse) {
+    option idempotency_level = IDEMPOTENT;
+  };
 }
 
 message ReadInputRegistersRequest {
@@ -176,6 +179,30 @@ message WriteMultipleRegistersRequest {
 }
 
 message WriteMultipleRegistersResponse {}
+
+message MaskWriteRegisterRequest {
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535
+  ];
+  option (buf.validate.message).oneof = { fields: ["int_and_mask", "bit_and_mask"], required: true };
+  uint32 int_and_mask = 2 [
+    (buf.validate.field).uint32.gte=0, (buf.validate.field).uint32.lte=65535
+  ];
+  RegisterBitMask bit_and_mask = 3;
+  option (buf.validate.message).oneof = { fields: ["int_or_mask", "bit_or_mask"], required: true };
+  uint32 int_or_mask = 4 [
+    (buf.validate.field).uint32.gte=0, (buf.validate.field).uint32.lte=65535
+  ];
+  RegisterBitMask bit_or_mask = 5;
+}
+
+message MaskWriteRegisterResponse {}
+
+message RegisterBitMask {
+  repeated bool bits = 1 [
+    (buf.validate.field).repeated.min_items=16, (buf.validate.field).repeated.max_items=16
+  ];
+}
 
 message BooleanAddress {
   // The address of the coil or discrete input

@@ -56,6 +56,9 @@ const (
 	// ModbusServiceWriteMultipleRegistersProcedure is the fully-qualified name of the ModbusService's
 	// WriteMultipleRegisters RPC.
 	ModbusServiceWriteMultipleRegistersProcedure = "/modbustohttp.v1alpha1.ModbusService/WriteMultipleRegisters"
+	// ModbusServiceMaskWriteRegisterProcedure is the fully-qualified name of the ModbusService's
+	// MaskWriteRegister RPC.
+	ModbusServiceMaskWriteRegisterProcedure = "/modbustohttp.v1alpha1.ModbusService/MaskWriteRegister"
 )
 
 // ModbusServiceClient is a client for the modbustohttp.v1alpha1.ModbusService service.
@@ -68,6 +71,7 @@ type ModbusServiceClient interface {
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	MaskWriteRegister(context.Context, *connect.Request[v1alpha1.MaskWriteRegisterRequest]) (*connect.Response[v1alpha1.MaskWriteRegisterResponse], error)
 }
 
 // NewModbusServiceClient constructs a client for the modbustohttp.v1alpha1.ModbusService service.
@@ -137,6 +141,13 @@ func NewModbusServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithIdempotency(connect.IdempotencyIdempotent),
 			connect.WithClientOptions(opts...),
 		),
+		maskWriteRegister: connect.NewClient[v1alpha1.MaskWriteRegisterRequest, v1alpha1.MaskWriteRegisterResponse](
+			httpClient,
+			baseURL+ModbusServiceMaskWriteRegisterProcedure,
+			connect.WithSchema(modbusServiceMethods.ByName("MaskWriteRegister")),
+			connect.WithIdempotency(connect.IdempotencyIdempotent),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -150,6 +161,7 @@ type modbusServiceClient struct {
 	writeMultipleCoils     *connect.Client[v1alpha1.WriteMultipleCoilsRequest, v1alpha1.WriteMultipleCoilsResponse]
 	readInputRegisters     *connect.Client[v1alpha1.ReadInputRegistersRequest, v1alpha1.ReadInputRegistersResponse]
 	writeMultipleRegisters *connect.Client[v1alpha1.WriteMultipleRegistersRequest, v1alpha1.WriteMultipleRegistersResponse]
+	maskWriteRegister      *connect.Client[v1alpha1.MaskWriteRegisterRequest, v1alpha1.MaskWriteRegisterResponse]
 }
 
 // ReadHoldingRegisters calls modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters.
@@ -192,6 +204,11 @@ func (c *modbusServiceClient) WriteMultipleRegisters(ctx context.Context, req *c
 	return c.writeMultipleRegisters.CallUnary(ctx, req)
 }
 
+// MaskWriteRegister calls modbustohttp.v1alpha1.ModbusService.MaskWriteRegister.
+func (c *modbusServiceClient) MaskWriteRegister(ctx context.Context, req *connect.Request[v1alpha1.MaskWriteRegisterRequest]) (*connect.Response[v1alpha1.MaskWriteRegisterResponse], error) {
+	return c.maskWriteRegister.CallUnary(ctx, req)
+}
+
 // ModbusServiceHandler is an implementation of the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceHandler interface {
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
@@ -202,6 +219,7 @@ type ModbusServiceHandler interface {
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	MaskWriteRegister(context.Context, *connect.Request[v1alpha1.MaskWriteRegisterRequest]) (*connect.Response[v1alpha1.MaskWriteRegisterResponse], error)
 }
 
 // NewModbusServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -267,6 +285,13 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 		connect.WithIdempotency(connect.IdempotencyIdempotent),
 		connect.WithHandlerOptions(opts...),
 	)
+	modbusServiceMaskWriteRegisterHandler := connect.NewUnaryHandler(
+		ModbusServiceMaskWriteRegisterProcedure,
+		svc.MaskWriteRegister,
+		connect.WithSchema(modbusServiceMethods.ByName("MaskWriteRegister")),
+		connect.WithIdempotency(connect.IdempotencyIdempotent),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/modbustohttp.v1alpha1.ModbusService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ModbusServiceReadHoldingRegistersProcedure:
@@ -285,6 +310,8 @@ func NewModbusServiceHandler(svc ModbusServiceHandler, opts ...connect.HandlerOp
 			modbusServiceReadInputRegistersHandler.ServeHTTP(w, r)
 		case ModbusServiceWriteMultipleRegistersProcedure:
 			modbusServiceWriteMultipleRegistersHandler.ServeHTTP(w, r)
+		case ModbusServiceMaskWriteRegisterProcedure:
+			modbusServiceMaskWriteRegisterHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -324,4 +351,8 @@ func (UnimplementedModbusServiceHandler) ReadInputRegisters(context.Context, *co
 
 func (UnimplementedModbusServiceHandler) WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.WriteMultipleRegisters is not implemented"))
+}
+
+func (UnimplementedModbusServiceHandler) MaskWriteRegister(context.Context, *connect.Request[v1alpha1.MaskWriteRegisterRequest]) (*connect.Response[v1alpha1.MaskWriteRegisterResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("modbustohttp.v1alpha1.ModbusService.MaskWriteRegister is not implemented"))
 }

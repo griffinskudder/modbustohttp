@@ -179,6 +179,41 @@ func (s Service) WriteMultipleRegisters(
 	return connect.NewResponse(&modbusv1alpha1.WriteMultipleRegistersResponse{}), nil
 }
 
+func (s Service) MaskWriteRegister(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.MaskWriteRegisterRequest],
+) (*connect.Response[modbusv1alpha1.MaskWriteRegisterResponse], error) {
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+	var andMask uint16
+	if req.Msg.GetBitAndMask() != nil {
+		andMaskBytes := utils.BoolArrayToByteArray(req.Msg.GetBitAndMask().GetBits())
+		binary.BigEndian.Uint16(andMaskBytes[:2])
+	} else {
+		andMask = uint16(req.Msg.GetIntAndMask())
+	}
+	var orMask uint16
+	if req.Msg.GetBitOrMask() != nil {
+		orMaskBytes := utils.BoolArrayToByteArray(req.Msg.GetBitOrMask().GetBits())
+		binary.BigEndian.Uint16(orMaskBytes[:2])
+	} else {
+		orMask = uint16(req.Msg.GetIntOrMask())
+	}
+
+	_, err = client.MaskWriteRegister(
+		uint16(req.Msg.GetAddress()),
+		andMask,
+		orMask,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&modbusv1alpha1.MaskWriteRegisterResponse{}), nil
+}
+
 func NewService(modbusHandler *modbus.TCPClientHandler) *Service {
 	return &Service{
 		modbusHandler,
