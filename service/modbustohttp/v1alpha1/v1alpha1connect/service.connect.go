@@ -63,14 +63,23 @@ const (
 
 // ModbusServiceClient is a client for the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceClient interface {
+	// ReadHoldingRegisters reads the holding registers from the modbus server
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
+	// WriteSingleRegister writes a single holding register to the modbus server
 	WriteSingleRegister(context.Context, *connect.Request[v1alpha1.WriteSingleRegisterRequest]) (*connect.Response[v1alpha1.WriteSingleRegisterResponse], error)
+	// ReadCoils reads the coils from the modbus server
 	ReadCoils(context.Context, *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error)
+	// ReadDiscreteInputs reads the discrete inputs from the modbus server
 	ReadDiscreteInputs(context.Context, *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error)
+	// WriteSingleCoil writes a single coil to the modbus server
 	WriteSingleCoil(context.Context, *connect.Request[v1alpha1.WriteSingleCoilRequest]) (*connect.Response[v1alpha1.WriteSingleCoilResponse], error)
+	// WriteMultipleCoils writes multiple coils to the modbus server
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
+	// ReadInputRegisters reads the input registers from the modbus server
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
+	// WriteMultipleRegisters writes multiple holding registers to the modbus server
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	// WriteBitInRegister writes a single bit in a holding register to the modbus server
 	WriteBitInRegister(context.Context, *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error)
 }
 
@@ -210,14 +219,23 @@ func (c *modbusServiceClient) WriteBitInRegister(ctx context.Context, req *conne
 
 // ModbusServiceHandler is an implementation of the modbustohttp.v1alpha1.ModbusService service.
 type ModbusServiceHandler interface {
+	// ReadHoldingRegisters reads the holding registers from the modbus server
 	ReadHoldingRegisters(context.Context, *connect.Request[v1alpha1.ReadHoldingRegistersRequest]) (*connect.Response[v1alpha1.ReadHoldingRegistersResponse], error)
+	// WriteSingleRegister writes a single holding register to the modbus server
 	WriteSingleRegister(context.Context, *connect.Request[v1alpha1.WriteSingleRegisterRequest]) (*connect.Response[v1alpha1.WriteSingleRegisterResponse], error)
+	// ReadCoils reads the coils from the modbus server
 	ReadCoils(context.Context, *connect.Request[v1alpha1.ReadCoilsRequest]) (*connect.Response[v1alpha1.ReadCoilsResponse], error)
+	// ReadDiscreteInputs reads the discrete inputs from the modbus server
 	ReadDiscreteInputs(context.Context, *connect.Request[v1alpha1.ReadDiscreteInputsRequest]) (*connect.Response[v1alpha1.ReadDiscreteInputsResponse], error)
+	// WriteSingleCoil writes a single coil to the modbus server
 	WriteSingleCoil(context.Context, *connect.Request[v1alpha1.WriteSingleCoilRequest]) (*connect.Response[v1alpha1.WriteSingleCoilResponse], error)
+	// WriteMultipleCoils writes multiple coils to the modbus server
 	WriteMultipleCoils(context.Context, *connect.Request[v1alpha1.WriteMultipleCoilsRequest]) (*connect.Response[v1alpha1.WriteMultipleCoilsResponse], error)
+	// ReadInputRegisters reads the input registers from the modbus server
 	ReadInputRegisters(context.Context, *connect.Request[v1alpha1.ReadInputRegistersRequest]) (*connect.Response[v1alpha1.ReadInputRegistersResponse], error)
+	// WriteMultipleRegisters writes multiple holding registers to the modbus server
 	WriteMultipleRegisters(context.Context, *connect.Request[v1alpha1.WriteMultipleRegistersRequest]) (*connect.Response[v1alpha1.WriteMultipleRegistersResponse], error)
+	// WriteBitInRegister writes a single bit in a holding register to the modbus server
 	WriteBitInRegister(context.Context, *connect.Request[v1alpha1.WriteBitInRegisterRequest]) (*connect.Response[v1alpha1.WriteBitInRegisterResponse], error)
 }
 

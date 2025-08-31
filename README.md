@@ -24,7 +24,8 @@ The request requires the following parameters:
 - `value`: The value to write (true or false).
 
 The server will read the current value of the holding register, modify the specified bit, and write the new value back 
-to the register.
+to the register. Due to this read-modify-write operation, this function is not atomic and may lead to race conditions if
+multiple clients attempt to write to the same register simultaneously.
 
 ## Supported Modbus Protocols
 

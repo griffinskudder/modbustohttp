@@ -12,31 +12,39 @@ import "buf/validate/validate.proto";
 // ModbusService translates the modbus.Client interface to RPC here: https://pkg.go.dev/github.com/goburrow/modbus#Client
 // Implementation guided by the documentation of the Modbus protocol here: https://www.modbustools.com/modbus.html
 service ModbusService {
+  // ReadHoldingRegisters reads the holding registers from the modbus server
   rpc ReadHoldingRegisters(ReadHoldingRegistersRequest) returns (ReadHoldingRegistersResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
-
+  // WriteSingleRegister writes a single holding register to the modbus server
   rpc WriteSingleRegister(WriteSingleRegisterRequest) returns (WriteSingleRegisterResponse) {
     option idempotency_level = IDEMPOTENT;
   };
+  // ReadCoils reads the coils from the modbus server
   rpc ReadCoils(ReadCoilsRequest) returns (ReadCoilsResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
+  // ReadDiscreteInputs reads the discrete inputs from the modbus server
   rpc ReadDiscreteInputs(ReadDiscreteInputsRequest) returns (ReadDiscreteInputsResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
+  // WriteSingleCoil writes a single coil to the modbus server
   rpc WriteSingleCoil(WriteSingleCoilRequest) returns (WriteSingleCoilResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  // WriteMultipleCoils writes multiple coils to the modbus server
   rpc WriteMultipleCoils(WriteMultipleCoilsRequest) returns (WriteMultipleCoilsResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  // ReadInputRegisters reads the input registers from the modbus server
   rpc ReadInputRegisters(ReadInputRegistersRequest) returns (ReadInputRegistersResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   };
+  // WriteMultipleRegisters writes multiple holding registers to the modbus server
   rpc WriteMultipleRegisters(WriteMultipleRegistersRequest) returns (WriteMultipleRegistersResponse) {
     option idempotency_level = IDEMPOTENT;
   }
+  // WriteBitInRegister writes a single bit in a holding register to the modbus server
   rpc WriteBitInRegister(WriteBitInRegisterRequest) returns (WriteBitInRegisterResponse) {};
 }
 

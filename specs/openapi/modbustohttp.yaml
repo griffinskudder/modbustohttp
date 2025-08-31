@@ -5,7 +5,8 @@ paths:
     get:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadHoldingRegisters
+      summary: ReadHoldingRegisters reads the holding registers from the modbus server
+      description: ReadHoldingRegisters reads the holding registers from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters.get
       parameters:
         - name: Connect-Protocol-Version
@@ -56,7 +57,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadHoldingRegisters
+      summary: ReadHoldingRegisters reads the holding registers from the modbus server
+      description: ReadHoldingRegisters reads the holding registers from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters
       parameters:
         - name: Connect-Protocol-Version
@@ -91,7 +93,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: WriteSingleRegister
+      summary: WriteSingleRegister writes a single holding register to the modbus server
+      description: WriteSingleRegister writes a single holding register to the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.WriteSingleRegister
       parameters:
         - name: Connect-Protocol-Version
@@ -126,7 +129,8 @@ paths:
     get:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadCoils
+      summary: ReadCoils reads the coils from the modbus server
+      description: ReadCoils reads the coils from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadCoils.get
       parameters:
         - name: Connect-Protocol-Version
@@ -177,7 +181,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadCoils
+      summary: ReadCoils reads the coils from the modbus server
+      description: ReadCoils reads the coils from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadCoils
       parameters:
         - name: Connect-Protocol-Version
@@ -212,7 +217,8 @@ paths:
     get:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadDiscreteInputs
+      summary: ReadDiscreteInputs reads the discrete inputs from the modbus server
+      description: ReadDiscreteInputs reads the discrete inputs from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs.get
       parameters:
         - name: Connect-Protocol-Version
@@ -263,7 +269,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadDiscreteInputs
+      summary: ReadDiscreteInputs reads the discrete inputs from the modbus server
+      description: ReadDiscreteInputs reads the discrete inputs from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs
       parameters:
         - name: Connect-Protocol-Version
@@ -298,7 +305,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: WriteSingleCoil
+      summary: WriteSingleCoil writes a single coil to the modbus server
+      description: WriteSingleCoil writes a single coil to the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.WriteSingleCoil
       parameters:
         - name: Connect-Protocol-Version
@@ -333,7 +341,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: WriteMultipleCoils
+      summary: WriteMultipleCoils writes multiple coils to the modbus server
+      description: WriteMultipleCoils writes multiple coils to the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.WriteMultipleCoils
       parameters:
         - name: Connect-Protocol-Version
@@ -368,7 +377,8 @@ paths:
     get:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadInputRegisters
+      summary: ReadInputRegisters reads the input registers from the modbus server
+      description: ReadInputRegisters reads the input registers from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadInputRegisters.get
       parameters:
         - name: Connect-Protocol-Version
@@ -419,7 +429,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: ReadInputRegisters
+      summary: ReadInputRegisters reads the input registers from the modbus server
+      description: ReadInputRegisters reads the input registers from the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.ReadInputRegisters
       parameters:
         - name: Connect-Protocol-Version
@@ -454,7 +465,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: WriteMultipleRegisters
+      summary: WriteMultipleRegisters writes multiple holding registers to the modbus server
+      description: WriteMultipleRegisters writes multiple holding registers to the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.WriteMultipleRegisters
       parameters:
         - name: Connect-Protocol-Version
@@ -489,7 +501,8 @@ paths:
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
-      summary: WriteBitInRegister
+      summary: WriteBitInRegister writes a single bit in a holding register to the modbus server
+      description: WriteBitInRegister writes a single bit in a holding register to the modbus server
       operationId: modbustohttp.v1alpha1.ModbusService.WriteBitInRegister
       parameters:
         - name: Connect-Protocol-Version
