@@ -13,7 +13,18 @@ A lightweight, extendable modbus to http server using [go modbus](https://pkg.go
 - Write Single Register
 - Write Multiple Coils
 - Write Multiple Registers
-- Write Bit In Register
+- Write Bit In Register (Custom Function)
+
+### Write Bit In Register
+This custom function allows you to write a single bit in a holding register without affecting the other bits.  
+
+The request requires the following parameters:
+- `address`: The address of the holding register (0-based).
+- `bit_position`: The position of the bit to write (0-15).
+- `value`: The value to write (true or false).
+
+The server will read the current value of the holding register, modify the specified bit, and write the new value back 
+to the register.
 
 ## Supported Modbus Protocols
 
