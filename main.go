@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"modbustohttp/internal/config"
 	"modbustohttp/internal/interceptors"
 	"modbustohttp/internal/modbusservice"
 	"net/http"
@@ -10,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"modbustohttp/config"
 	"modbustohttp/service/modbustohttp/v1alpha1/v1alpha1connect"
 
 	"connectrpc.com/connect"
