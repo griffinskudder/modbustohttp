@@ -533,6 +533,94 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteBitInRegisterResponse'
+  /modbustohttp.v1alpha1.ModbusService/ReadRegisterAsBits:
+    get:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadRegisterAsBits reads a holding register and returns its bits
+      description: ReadRegisterAsBits reads a holding register and returns its bits
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadRegisterAsBits.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadRegisterAsBitsRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadRegisterAsBitsResponse'
+    post:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadRegisterAsBits reads a holding register and returns its bits
+      description: ReadRegisterAsBits reads a holding register and returns its bits
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadRegisterAsBits
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadRegisterAsBitsRequest'
+        required: true
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadRegisterAsBitsResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -754,6 +842,31 @@ components:
           minItems: 1
           description: The values of the registers read
       title: ReadInputRegistersResponse
+      additionalProperties: false
+    modbustohttp.v1alpha1.ReadRegisterAsBitsRequest:
+      type: object
+      properties:
+        address:
+          type: integer
+          title: address
+          maximum: 65535
+          description: |
+            The address of the register
+            uint32.lte = 65535
+      title: ReadRegisterAsBitsRequest
+      additionalProperties: false
+    modbustohttp.v1alpha1.ReadRegisterAsBitsResponse:
+      type: object
+      properties:
+        bits:
+          type: array
+          items:
+            $ref: '#/components/schemas/modbustohttp.v1alpha1.BooleanAddress'
+          title: bits
+          maxItems: 16
+          minItems: 1
+          description: The bits of the register read
+      title: ReadRegisterAsBitsResponse
       additionalProperties: false
     modbustohttp.v1alpha1.WriteBitInRegisterRequest:
       type: object

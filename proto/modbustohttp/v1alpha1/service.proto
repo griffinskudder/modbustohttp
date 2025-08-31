@@ -46,6 +46,10 @@ service ModbusService {
   }
   // WriteBitInRegister writes a single bit in a holding register to the modbus server
   rpc WriteBitInRegister(WriteBitInRegisterRequest) returns (WriteBitInRegisterResponse) {};
+  // ReadRegisterAsBits reads a holding register and returns its bits
+  rpc ReadRegisterAsBits(ReadRegisterAsBitsRequest) returns (ReadRegisterAsBitsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
 }
 
 message ReadInputRegistersRequest {
@@ -203,3 +207,18 @@ message WriteBitInRegisterRequest {
 }
 
 message WriteBitInRegisterResponse {}
+
+message ReadRegisterAsBitsRequest {
+  // The address of the register
+  uint32 address = 1 [
+    (buf.validate.field).uint32.lte = 65535
+  ];
+}
+
+message ReadRegisterAsBitsResponse {
+  // The bits of the register read
+  repeated BooleanAddress bits = 1 [
+    (buf.validate.field).repeated.min_items=1,
+    (buf.validate.field).repeated.max_items=16
+  ];
+}

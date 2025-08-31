@@ -1,7 +1,7 @@
 package utils
 
-func ByteToBoolArray(b byte) [8]bool {
-	var boolArray [8]bool
+func ByteToBoolArray(b byte) []bool {
+	boolArray := make([]bool, 8)
 	for i := 0; i < 8; i++ {
 		boolArray[i] = (b & (1 << i)) != 0
 	}

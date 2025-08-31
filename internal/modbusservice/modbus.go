@@ -214,7 +214,8 @@ func (s Service) WriteBitInRegister(
 	// Fallback is only possible if both WriteSingleRegister and ReadHoldingRegisters are supported
 	// as we need to read the current value of the register, modify the specific bit and write it back.
 	// If either of these functions is not supported, we cannot use the fallback method.
-	fallbackEnabled := slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleRegister) >= 0 && slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) >= 0
+	fallbackEnabled := slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleRegister) >= 0 &&
+		slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) >= 0
 	// If neither primary nor fallback method is possible, return unimplemented error.
 	if !primaryEnabled && !fallbackEnabled {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
@@ -272,6 +273,40 @@ func (s Service) WriteBitInRegister(
 	}
 
 	return connect.NewResponse(&modbusv1alpha1.WriteBitInRegisterResponse{}), nil
+}
+
+func (s Service) ReadRegisterAsBits(
+	_ context.Context,
+	req *connect.Request[modbusv1alpha1.ReadRegisterAsBitsRequest],
+) (*connect.Response[modbusv1alpha1.ReadRegisterAsBitsResponse], error) {
+	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) == -1 {
+		return nil, connect.NewError(connect.CodeUnimplemented, nil)
+	}
+	err := s.modbusHandler.Connect()
+	if err != nil {
+		return nil, err
+	}
+	client := modbus.NewClient(s.modbusHandler)
+
+	data, err := client.ReadHoldingRegisters(uint16(req.Msg.GetAddress()), 1)
+	if err != nil {
+		return nil, err
+	}
+	rawBits := utils.ByteToBoolArray(data[1]) // data[0] is the high byte, data[1] is the low byte
+	rawBits = append(rawBits, utils.ByteToBoolArray(data[0])...)
+
+	bits := make([]*modbusv1alpha1.BooleanAddress, 16)
+	for i, bit := range rawBits {
+		bits[i] = &modbusv1alpha1.BooleanAddress{
+			Address: uint32(i),
+			Value:   bit,
+		}
+	}
+
+	response := modbusv1alpha1.ReadRegisterAsBitsResponse{
+		Bits: bits,
+	}
+	return connect.NewResponse(&response), nil
 }
 
 func NewService(modbusHandler *modbus.TCPClientHandler, modbusConfig *config.Modbus) *Service {
