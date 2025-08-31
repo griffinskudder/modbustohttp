@@ -4,6 +4,57 @@ info:
   version: v1alpha1
 paths:
   /modbustohttp.v1alpha1.ModbusService/ReadHoldingRegisters:
+    get:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadHoldingRegisters
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadHoldingRegistersRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadHoldingRegistersResponse'
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
@@ -74,6 +125,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteSingleRegisterResponse'
   /modbustohttp.v1alpha1.ModbusService/ReadCoils:
+    get:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadCoils
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadCoils.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadCoilsRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadCoilsResponse'
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
@@ -109,6 +211,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadCoilsResponse'
   /modbustohttp.v1alpha1.ModbusService/ReadDiscreteInputs:
+    get:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadDiscreteInputs
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadDiscreteInputs.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadDiscreteInputsRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadDiscreteInputsResponse'
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
@@ -214,6 +367,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleCoilsResponse'
   /modbustohttp.v1alpha1.ModbusService/ReadInputRegisters:
+    get:
+      tags:
+        - modbustohttp.v1alpha1.ModbusService
+      summary: ReadInputRegisters
+      operationId: modbustohttp.v1alpha1.ModbusService.ReadInputRegisters.get
+      parameters:
+        - name: Connect-Protocol-Version
+          in: header
+          required: true
+          schema:
+            $ref: '#/components/schemas/connect-protocol-version'
+        - name: Connect-Timeout-Ms
+          in: header
+          schema:
+            $ref: '#/components/schemas/connect-timeout-header'
+        - name: message
+          in: query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadInputRegistersRequest'
+        - name: encoding
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/encoding'
+        - name: base64
+          in: query
+          schema:
+            $ref: '#/components/schemas/base64'
+        - name: compression
+          in: query
+          schema:
+            $ref: '#/components/schemas/compression'
+        - name: connect
+          in: query
+          schema:
+            $ref: '#/components/schemas/connect'
+      responses:
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/connect.error'
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/modbustohttp.v1alpha1.ReadInputRegistersResponse'
     post:
       tags:
         - modbustohttp.v1alpha1.ModbusService
@@ -327,15 +531,7 @@ components:
           type: integer
           title: address
           maximum: 65535
-          minimum: 0
-          description: |
-            The address of the coil or discrete input
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
+          description: The address of the coil or discrete input
         value:
           type: boolean
           title: value
@@ -349,32 +545,21 @@ components:
           type: integer
           title: address
           maximum: 65535
-          minimum: 0
-          description: |
-            The address to start reading from
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
+          description: The address to start reading from
         quantity:
           type: integer
           title: quantity
           maximum: 2000
           minimum: 1
-          description: |
-            The quantity of registers to read starting from address
-            uint32.gte = 1
-            uint32.gte_lt = 1
-            uint32.gte_lt_exclusive = 1
-            uint32.gte_lte = 1
-            uint32.gte_lte_exclusive = 1
-            uint32.lte = 2000
+          description: The quantity of registers to read starting from address
       title: ReadCoilsRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + quantity must not be greater than 65536
+      description: |+
+        address + quantity must not be greater than 65536:
+        ```
+        this.address + this.quantity <= 65536
+        ```
+
     modbustohttp.v1alpha1.ReadCoilsResponse:
       type: object
       properties:
@@ -394,32 +579,21 @@ components:
           type: integer
           title: address
           maximum: 65535
-          minimum: 0
-          description: |
-            The address to start reading from
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
+          description: The address to start reading from
         quantity:
           type: integer
           title: quantity
           maximum: 2000
           minimum: 1
-          description: |
-            The quantity of registers to read starting from address
-            uint32.gte = 1
-            uint32.gte_lt = 1
-            uint32.gte_lt_exclusive = 1
-            uint32.gte_lte = 1
-            uint32.gte_lte_exclusive = 1
-            uint32.lte = 2000
+          description: The quantity of registers to read starting from address
       title: ReadDiscreteInputsRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + quantity must not be greater than 65536
+      description: |+
+        address + quantity must not be greater than 65536:
+        ```
+        this.address + this.quantity <= 65536
+        ```
+
     modbustohttp.v1alpha1.ReadDiscreteInputsResponse:
       type: object
       properties:
@@ -439,27 +613,22 @@ components:
           type: integer
           title: address
           maximum: 65535
-          description: |
-            The address start start reading from
-            uint32.lte = 65535
+          description: The address start start reading from
         quantity:
           exclusiveMinimum: 0
           type: integer
           title: quantity
           maximum: 125
-          description: |
-            The quantity of registers to read start from address
-            uint32.gt = 0
-            uint32.gt_lt = 0
-            uint32.gt_lt_exclusive = 0
-            uint32.gt_lte = 0
-            uint32.gt_lte_exclusive = 0
-            uint32.lte = 125
+          description: The quantity of registers to read start from address
           nullable: true
       title: ReadHoldingRegistersRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + quantity must not be greater than 65536
+      description: |+
+        address + quantity must not be greater than 65536:
+        ```
+        this.address + this.quantity <= 65536
+        ```
+
     modbustohttp.v1alpha1.ReadHoldingRegistersResponse:
       type: object
       properties:
@@ -480,27 +649,22 @@ components:
           type: integer
           title: address
           maximum: 65535
-          description: |
-            The address start start reading from
-            uint32.lte = 65535
+          description: The address start start reading from
         quantity:
           exclusiveMinimum: 0
           type: integer
           title: quantity
           maximum: 125
-          description: |
-            The quantity of registers to read start from address
-            uint32.gt = 0
-            uint32.gt_lt = 0
-            uint32.gt_lt_exclusive = 0
-            uint32.gt_lte = 0
-            uint32.gt_lte_exclusive = 0
-            uint32.lte = 125
+          description: The quantity of registers to read start from address
           nullable: true
       title: ReadInputRegistersRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + quantity must not be greater than 65536
+      description: |+
+        address + quantity must not be greater than 65536:
+        ```
+        this.address + this.quantity <= 65536
+        ```
+
     modbustohttp.v1alpha1.ReadInputRegistersResponse:
       type: object
       properties:
@@ -521,22 +685,12 @@ components:
           type: integer
           title: address
           maximum: 65535
-          description: |
-            The address of the register
-            uint32.lte = 65535
+          description: The address of the register
         value:
           type: integer
           title: value
           maximum: 65535
-          minimum: 0
-          description: |
-            The value of the register
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
+          description: The value of the register
       title: Register
       additionalProperties: false
       description: A modbus register value
@@ -547,22 +701,12 @@ components:
           type: integer
           title: address
           maximum: 65535
-          description: |
-            The address of the register
-            uint32.lte = 65535
+          description: The address of the register
         bit:
           type: integer
           title: bit
           maximum: 15
-          minimum: 0
-          description: |
-            The bit to write in the register (0-15)
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 15
+          description: The bit to write in the register (0-15)
         value:
           type: boolean
           title: value
@@ -584,14 +728,6 @@ components:
           type: integer
           title: address
           maximum: 65535
-          minimum: 0
-          description: |
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
         values:
           type: array
           items:
@@ -599,8 +735,12 @@ components:
           title: values
       title: WriteMultipleCoilsRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + length of values must not be greater than 65536
+      description: |+
+        address + length of values must not be greater than 65536:
+        ```
+        this.address + uint(this.values.size()) <= 65536
+        ```
+
     modbustohttp.v1alpha1.WriteMultipleCoilsResponse:
       type: object
       title: WriteMultipleCoilsResponse
@@ -612,8 +752,6 @@ components:
           type: integer
           title: address
           maximum: 65535
-          description: |
-            uint32.lte = 65535
         values:
           type: array
           items:
@@ -625,8 +763,12 @@ components:
           minItems: 1
       title: WriteMultipleRegistersRequest
       additionalProperties: false
-      description: |
-        not.out.of.range // address + length of values must not be greater than 65536
+      description: |+
+        address + length of values must not be greater than 65536:
+        ```
+        this.address + uint(this.values.size()) <= 65536
+        ```
+
     modbustohttp.v1alpha1.WriteMultipleRegistersResponse:
       type: object
       title: WriteMultipleRegistersResponse
@@ -656,6 +798,28 @@ components:
       type: object
       title: WriteSingleRegisterResponse
       additionalProperties: false
+    encoding:
+      title: encoding
+      enum:
+        - proto
+        - json
+      description: Define which encoding or 'Message-Codec' to use
+    base64:
+      type: boolean
+      title: base64
+      description: Specifies if the message query param is base64 encoded, which may be required for binary data
+    compression:
+      title: compression
+      enum:
+        - identity
+        - gzip
+        - br
+      description: Which compression algorithm to use for this request
+    connect:
+      title: connect
+      enum:
+        - v1
+      description: Define the version of the Connect protocol
     connect-protocol-version:
       type: number
       title: Connect-Protocol-Version
@@ -695,36 +859,24 @@ components:
         message:
           type: string
           description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-        details:
-          type: array
-          items:
-            $ref: '#/components/schemas/connect.error_details.Any'
-          description: A list of messages that carry the error details. There is no limit on the number of messages.
+        detail:
+          $ref: '#/components/schemas/google.protobuf.Any'
       title: Connect Error
       additionalProperties: true
       description: 'Error type returned by Connect: https://connectrpc.com/docs/go/errors/#http-representation'
-    connect.error_details.Any:
+    google.protobuf.Any:
       type: object
       properties:
         type:
           type: string
-          description: 'A URL that acts as a globally unique identifier for the type of the serialized message. For example: `type.googleapis.com/google.rpc.ErrorInfo`. This is used to determine the schema of the data in the `value` field and is the discriminator for the `debug` field.'
         value:
           type: string
           format: binary
-          description: The Protobuf message, serialized as bytes and base64-encoded. The specific message type is identified by the `type` field.
         debug:
-          oneOf:
-            - type: object
-              title: Any
-              additionalProperties: true
-              description: Detailed error information.
-          discriminator:
-            propertyName: type
-          title: Debug
-          description: Deserialized error detail payload. The 'type' field indicates the schema. This field is for easier debugging and should not be relied upon for application logic.
+          type: object
+          additionalProperties: true
       additionalProperties: true
-      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message, with an additional debug field for ConnectRPC error details.
+      description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
 security: []
 tags:
   - name: modbustohttp.v1alpha1.ModbusService
