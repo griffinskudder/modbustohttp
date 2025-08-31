@@ -282,41 +282,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/modbustohttp.v1alpha1.WriteMultipleRegistersResponse'
-  /modbustohttp.v1alpha1.ModbusService/MaskWriteRegister:
-    post:
-      tags:
-        - modbustohttp.v1alpha1.ModbusService
-      summary: MaskWriteRegister
-      operationId: modbustohttp.v1alpha1.ModbusService.MaskWriteRegister
-      parameters:
-        - name: Connect-Protocol-Version
-          in: header
-          required: true
-          schema:
-            $ref: '#/components/schemas/connect-protocol-version'
-        - name: Connect-Timeout-Ms
-          in: header
-          schema:
-            $ref: '#/components/schemas/connect-timeout-header'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/modbustohttp.v1alpha1.MaskWriteRegisterRequest'
-        required: true
-      responses:
-        default:
-          description: Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/connect.error'
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/modbustohttp.v1alpha1.MaskWriteRegisterResponse'
 components:
   schemas:
     modbustohttp.v1alpha1.BooleanAddress:
@@ -340,51 +305,6 @@ components:
           title: value
           description: The value of the coil or discrete input
       title: BooleanAddress
-      additionalProperties: false
-    modbustohttp.v1alpha1.MaskWriteRegisterRequest:
-      type: object
-      properties:
-        address:
-          type: integer
-          title: address
-          maximum: 65535
-          description: |
-            uint32.lte = 65535
-        intAndMask:
-          type: integer
-          title: int_and_mask
-          maximum: 65535
-          minimum: 0
-          description: |
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
-        bitAndMask:
-          title: bit_and_mask
-          $ref: '#/components/schemas/modbustohttp.v1alpha1.RegisterBitMask'
-        intOrMask:
-          type: integer
-          title: int_or_mask
-          maximum: 65535
-          minimum: 0
-          description: |
-            uint32.gte = 0
-            uint32.gte_lt = 0
-            uint32.gte_lt_exclusive = 0
-            uint32.gte_lte = 0
-            uint32.gte_lte_exclusive = 0
-            uint32.lte = 65535
-        bitOrMask:
-          title: bit_or_mask
-          $ref: '#/components/schemas/modbustohttp.v1alpha1.RegisterBitMask'
-      title: MaskWriteRegisterRequest
-      additionalProperties: false
-    modbustohttp.v1alpha1.MaskWriteRegisterResponse:
-      type: object
-      title: MaskWriteRegisterResponse
       additionalProperties: false
     modbustohttp.v1alpha1.ReadCoilsRequest:
       type: object
@@ -584,20 +504,6 @@ components:
       title: Register
       additionalProperties: false
       description: A modbus register value
-    modbustohttp.v1alpha1.RegisterBitMask:
-      type: object
-      properties:
-        bits:
-          type: array
-          items:
-            type: boolean
-            maxItems: 16
-            minItems: 16
-          title: bits
-          maxItems: 16
-          minItems: 16
-      title: RegisterBitMask
-      additionalProperties: false
     modbustohttp.v1alpha1.WriteMultipleCoilsRequest:
       type: object
       properties:

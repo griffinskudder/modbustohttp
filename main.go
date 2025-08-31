@@ -21,11 +21,11 @@ import (
 )
 
 func main() {
-	addr := "localhost:8080"
 	appConfig, err := config.LoadAppConfig("config.json")
 	if err != nil {
 		panic(err)
 	}
+	addr := fmt.Sprintf("%s:%d", appConfig.HTTP.Host, appConfig.HTTP.Port)
 
 	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 

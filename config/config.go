@@ -13,7 +13,8 @@ type Modbus struct {
 }
 
 type HTTP struct {
-	Port int `json:"port"`
+	Host string `json:"host"`
+	Port int    `json:"port"`
 }
 
 type AppConfig struct {
