@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1alpha1 "modbustohttp/gen/modbustohttp/v1alpha1"
+	v1alpha1 "modbustohttp/service/modbustohttp/v1alpha1"
 	http "net/http"
 	strings "strings"
 )

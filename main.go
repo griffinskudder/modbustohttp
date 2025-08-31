@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"modbustohttp/config"
-	"modbustohttp/gen/modbustohttp/v1alpha1/v1alpha1connect"
+	"modbustohttp/service/modbustohttp/v1alpha1/v1alpha1connect"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/grpcreflect"

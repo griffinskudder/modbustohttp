@@ -2,8 +2,8 @@ package modbusservice
 
 import (
 	"encoding/binary"
-	modbusv1alpha1 "modbustohttp/gen/modbustohttp/v1alpha1"
 	"modbustohttp/internal/utils"
+	modbusv1alpha1 "modbustohttp/service/modbustohttp/v1alpha1"
 )
 
 func MapByteArrayToBooleanAddress(data []byte, startAddress uint32, maxQuantity uint32) []*modbusv1alpha1.BooleanAddress {

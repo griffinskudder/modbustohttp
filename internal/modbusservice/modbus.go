@@ -8,7 +8,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/goburrow/modbus"
 
-	modbusv1alpha1 "modbustohttp/gen/modbustohttp/v1alpha1"
+	modbusv1alpha1 "modbustohttp/service/modbustohttp/v1alpha1"
 )
 
 type Service struct {

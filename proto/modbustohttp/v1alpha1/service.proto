@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package modbustohttp.v1alpha1;
 
-option go_package = "modbustohttp/gen/modbustohttp/v1alpha1";
+option go_package = "modbustohttp/service/modbustohttp/v1alpha1";
+
+import "modbustohttp/v1alpha1/types.proto";
 
 import "buf/validate/validate.proto";
 
@@ -194,27 +196,4 @@ message WriteBitInRegisterRequest {
 
 message WriteBitInRegisterResponse {
   Register register = 1;
-}
-
-message BooleanAddress {
-  // The address of the coil or discrete input
-  uint32 address = 1 [
-    (buf.validate.field).uint32.lte = 65535,
-    (buf.validate.field).uint32.gte = 0
-  ];
-  // The value of the coil or discrete input
-  bool value = 2;
-}
-
-
-// A modbus register value
-message Register {
-  // The address of the register
-  uint32 address = 1 [
-    (buf.validate.field).uint32.lte = 65535
-  ];
-  // The value of the register
-  uint32 value = 2 [
-    (buf.validate.field).uint32.gte = 0, (buf.validate.field).uint32.lte = 65535
-  ];
 }

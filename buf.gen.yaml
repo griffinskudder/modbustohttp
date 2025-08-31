@@ -3,15 +3,16 @@ inputs:
   - directory: proto
 plugins:
   - remote: buf.build/protocolbuffers/go
-    out: gen
+    out: service
     opt: paths=source_relative
   - remote: buf.build/connectrpc/go
-    out: gen
+    out: service
     opt: paths=source_relative
-  - remote: buf.build/community/sudorandom-connect-openapi:v0.19.1
-    out: gen
+  - remote: buf.build/community/sudorandom-connect-openapi:v0.20.3
+    out: specs
     opt:
      - allow-get
+     - path=openapi/modbustohttp.yaml
 managed:
   enabled: true
   disable:

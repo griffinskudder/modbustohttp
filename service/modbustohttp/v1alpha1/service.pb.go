@@ -860,120 +860,11 @@ func (x *WriteBitInRegisterResponse) GetRegister() *Register {
 	return nil
 }
 
-type BooleanAddress struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The address of the coil or discrete input
-	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	// The value of the coil or discrete input
-	Value         bool `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *BooleanAddress) Reset() {
-	*x = BooleanAddress{}
-	mi := &file_modbustohttp_v1alpha1_service_proto_msgTypes[18]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *BooleanAddress) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*BooleanAddress) ProtoMessage() {}
-
-func (x *BooleanAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_modbustohttp_v1alpha1_service_proto_msgTypes[18]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use BooleanAddress.ProtoReflect.Descriptor instead.
-func (*BooleanAddress) Descriptor() ([]byte, []int) {
-	return file_modbustohttp_v1alpha1_service_proto_rawDescGZIP(), []int{18}
-}
-
-func (x *BooleanAddress) GetAddress() uint32 {
-	if x != nil {
-		return x.Address
-	}
-	return 0
-}
-
-func (x *BooleanAddress) GetValue() bool {
-	if x != nil {
-		return x.Value
-	}
-	return false
-}
-
-// A modbus register value
-type Register struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The address of the register
-	Address uint32 `protobuf:"varint,1,opt,name=address,proto3" json:"address,omitempty"`
-	// The value of the register
-	Value         uint32 `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Register) Reset() {
-	*x = Register{}
-	mi := &file_modbustohttp_v1alpha1_service_proto_msgTypes[19]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Register) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Register) ProtoMessage() {}
-
-func (x *Register) ProtoReflect() protoreflect.Message {
-	mi := &file_modbustohttp_v1alpha1_service_proto_msgTypes[19]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Register.ProtoReflect.Descriptor instead.
-func (*Register) Descriptor() ([]byte, []int) {
-	return file_modbustohttp_v1alpha1_service_proto_rawDescGZIP(), []int{19}
-}
-
-func (x *Register) GetAddress() uint32 {
-	if x != nil {
-		return x.Address
-	}
-	return 0
-}
-
-func (x *Register) GetValue() uint32 {
-	if x != nil {
-		return x.Value
-	}
-	return 0
-}
-
 var File_modbustohttp_v1alpha1_service_proto protoreflect.FileDescriptor
 
 const file_modbustohttp_v1alpha1_service_proto_rawDesc = "" +
 	"\n" +
-	"#modbustohttp/v1alpha1/service.proto\x12\x15modbustohttp.v1alpha1\x1a\x1bbuf/validate/validate.proto\"\xec\x01\n" +
+	"#modbustohttp/v1alpha1/service.proto\x12\x15modbustohttp.v1alpha1\x1a!modbustohttp/v1alpha1/types.proto\x1a\x1bbuf/validate/validate.proto\"\xec\x01\n" +
 	"\x19ReadInputRegistersRequest\x12#\n" +
 	"\aaddress\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\aaddress\x12*\n" +
 	"\bquantity\x18\x02 \x01(\rB\t\xbaH\x06*\x04\x18} \x00H\x00R\bquantity\x88\x01\x01:q\xbaHn\x1al\n" +
@@ -1026,13 +917,7 @@ const file_modbustohttp_v1alpha1_service_proto_rawDesc = "" +
 	"\x03bit\x18\x02 \x01(\rB\t\xbaH\x06*\x04\x18\x0f(\x00R\x03bit\x12\x14\n" +
 	"\x05value\x18\x03 \x01(\bR\x05value\"Y\n" +
 	"\x1aWriteBitInRegisterResponse\x12;\n" +
-	"\bregister\x18\x01 \x01(\v2\x1f.modbustohttp.v1alpha1.RegisterR\bregister\"M\n" +
-	"\x0eBooleanAddress\x12%\n" +
-	"\aaddress\x18\x01 \x01(\rB\v\xbaH\b*\x06\x18\xff\xff\x03(\x00R\aaddress\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\bR\x05value\"R\n" +
-	"\bRegister\x12#\n" +
-	"\aaddress\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\aaddress\x12!\n" +
-	"\x05value\x18\x02 \x01(\rB\v\xbaH\b*\x06\x18\xff\xff\x03(\x00R\x05value2\x80\t\n" +
+	"\bregister\x18\x01 \x01(\v2\x1f.modbustohttp.v1alpha1.RegisterR\bregister2\x80\t\n" +
 	"\rModbusService\x12\x84\x01\n" +
 	"\x14ReadHoldingRegisters\x122.modbustohttp.v1alpha1.ReadHoldingRegistersRequest\x1a3.modbustohttp.v1alpha1.ReadHoldingRegistersResponse\"\x03\x90\x02\x01\x12\x81\x01\n" +
 	"\x13WriteSingleRegister\x121.modbustohttp.v1alpha1.WriteSingleRegisterRequest\x1a2.modbustohttp.v1alpha1.WriteSingleRegisterResponse\"\x03\x90\x02\x02\x12c\n" +
@@ -1042,8 +927,8 @@ const file_modbustohttp_v1alpha1_service_proto_rawDesc = "" +
 	"\x12WriteMultipleCoils\x120.modbustohttp.v1alpha1.WriteMultipleCoilsRequest\x1a1.modbustohttp.v1alpha1.WriteMultipleCoilsResponse\"\x03\x90\x02\x02\x12~\n" +
 	"\x12ReadInputRegisters\x120.modbustohttp.v1alpha1.ReadInputRegistersRequest\x1a1.modbustohttp.v1alpha1.ReadInputRegistersResponse\"\x03\x90\x02\x01\x12\x8a\x01\n" +
 	"\x16WriteMultipleRegisters\x124.modbustohttp.v1alpha1.WriteMultipleRegistersRequest\x1a5.modbustohttp.v1alpha1.WriteMultipleRegistersResponse\"\x03\x90\x02\x02\x12{\n" +
-	"\x12WriteBitInRegister\x120.modbustohttp.v1alpha1.WriteBitInRegisterRequest\x1a1.modbustohttp.v1alpha1.WriteBitInRegisterResponse\"\x00B\xc6\x01\n" +
-	"\x19com.modbustohttp.v1alpha1B\fServiceProtoP\x01Z&modbustohttp/gen/modbustohttp/v1alpha1\xa2\x02\x03MXX\xaa\x02\x15Modbustohttp.V1alpha1\xca\x02\x15Modbustohttp\\V1alpha1\xe2\x02!Modbustohttp\\V1alpha1\\GPBMetadata\xea\x02\x16Modbustohttp::V1alpha1b\x06proto3"
+	"\x12WriteBitInRegister\x120.modbustohttp.v1alpha1.WriteBitInRegisterRequest\x1a1.modbustohttp.v1alpha1.WriteBitInRegisterResponse\"\x00B\xca\x01\n" +
+	"\x19com.modbustohttp.v1alpha1B\fServiceProtoP\x01Z*modbustohttp/service/modbustohttp/v1alpha1\xa2\x02\x03MXX\xaa\x02\x15Modbustohttp.V1alpha1\xca\x02\x15Modbustohttp\\V1alpha1\xe2\x02!Modbustohttp\\V1alpha1\\GPBMetadata\xea\x02\x16Modbustohttp::V1alpha1b\x06proto3"
 
 var (
 	file_modbustohttp_v1alpha1_service_proto_rawDescOnce sync.Once
@@ -1057,7 +942,7 @@ func file_modbustohttp_v1alpha1_service_proto_rawDescGZIP() []byte {
 	return file_modbustohttp_v1alpha1_service_proto_rawDescData
 }
 
-var file_modbustohttp_v1alpha1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_modbustohttp_v1alpha1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_modbustohttp_v1alpha1_service_proto_goTypes = []any{
 	(*ReadInputRegistersRequest)(nil),      // 0: modbustohttp.v1alpha1.ReadInputRegistersRequest
 	(*ReadInputRegistersResponse)(nil),     // 1: modbustohttp.v1alpha1.ReadInputRegistersResponse
@@ -1077,17 +962,17 @@ var file_modbustohttp_v1alpha1_service_proto_goTypes = []any{
 	(*WriteMultipleRegistersResponse)(nil), // 15: modbustohttp.v1alpha1.WriteMultipleRegistersResponse
 	(*WriteBitInRegisterRequest)(nil),      // 16: modbustohttp.v1alpha1.WriteBitInRegisterRequest
 	(*WriteBitInRegisterResponse)(nil),     // 17: modbustohttp.v1alpha1.WriteBitInRegisterResponse
-	(*BooleanAddress)(nil),                 // 18: modbustohttp.v1alpha1.BooleanAddress
-	(*Register)(nil),                       // 19: modbustohttp.v1alpha1.Register
+	(*Register)(nil),                       // 18: modbustohttp.v1alpha1.Register
+	(*BooleanAddress)(nil),                 // 19: modbustohttp.v1alpha1.BooleanAddress
 }
 var file_modbustohttp_v1alpha1_service_proto_depIdxs = []int32{
-	19, // 0: modbustohttp.v1alpha1.ReadInputRegistersResponse.registers:type_name -> modbustohttp.v1alpha1.Register
-	19, // 1: modbustohttp.v1alpha1.ReadHoldingRegistersResponse.registers:type_name -> modbustohttp.v1alpha1.Register
-	19, // 2: modbustohttp.v1alpha1.WriteSingleRegisterRequest.register:type_name -> modbustohttp.v1alpha1.Register
-	18, // 3: modbustohttp.v1alpha1.ReadCoilsResponse.coils:type_name -> modbustohttp.v1alpha1.BooleanAddress
-	18, // 4: modbustohttp.v1alpha1.ReadDiscreteInputsResponse.inputs:type_name -> modbustohttp.v1alpha1.BooleanAddress
-	18, // 5: modbustohttp.v1alpha1.WriteSingleCoilRequest.coil:type_name -> modbustohttp.v1alpha1.BooleanAddress
-	19, // 6: modbustohttp.v1alpha1.WriteBitInRegisterResponse.register:type_name -> modbustohttp.v1alpha1.Register
+	18, // 0: modbustohttp.v1alpha1.ReadInputRegistersResponse.registers:type_name -> modbustohttp.v1alpha1.Register
+	18, // 1: modbustohttp.v1alpha1.ReadHoldingRegistersResponse.registers:type_name -> modbustohttp.v1alpha1.Register
+	18, // 2: modbustohttp.v1alpha1.WriteSingleRegisterRequest.register:type_name -> modbustohttp.v1alpha1.Register
+	19, // 3: modbustohttp.v1alpha1.ReadCoilsResponse.coils:type_name -> modbustohttp.v1alpha1.BooleanAddress
+	19, // 4: modbustohttp.v1alpha1.ReadDiscreteInputsResponse.inputs:type_name -> modbustohttp.v1alpha1.BooleanAddress
+	19, // 5: modbustohttp.v1alpha1.WriteSingleCoilRequest.coil:type_name -> modbustohttp.v1alpha1.BooleanAddress
+	18, // 6: modbustohttp.v1alpha1.WriteBitInRegisterResponse.register:type_name -> modbustohttp.v1alpha1.Register
 	2,  // 7: modbustohttp.v1alpha1.ModbusService.ReadHoldingRegisters:input_type -> modbustohttp.v1alpha1.ReadHoldingRegistersRequest
 	4,  // 8: modbustohttp.v1alpha1.ModbusService.WriteSingleRegister:input_type -> modbustohttp.v1alpha1.WriteSingleRegisterRequest
 	6,  // 9: modbustohttp.v1alpha1.ModbusService.ReadCoils:input_type -> modbustohttp.v1alpha1.ReadCoilsRequest
@@ -1118,6 +1003,7 @@ func file_modbustohttp_v1alpha1_service_proto_init() {
 	if File_modbustohttp_v1alpha1_service_proto != nil {
 		return
 	}
+	file_modbustohttp_v1alpha1_types_proto_init()
 	file_modbustohttp_v1alpha1_service_proto_msgTypes[0].OneofWrappers = []any{}
 	file_modbustohttp_v1alpha1_service_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
@@ -1126,7 +1012,7 @@ func file_modbustohttp_v1alpha1_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_modbustohttp_v1alpha1_service_proto_rawDesc), len(file_modbustohttp_v1alpha1_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
