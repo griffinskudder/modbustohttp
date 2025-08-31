@@ -1,4 +1,4 @@
-# ModbusToHttp
+# Modbus To HTTP
 
 A lightweight, extendable modbus to http server using [go modbus](https://pkg.go.dev/github.com/goburrow/modbus) and 
 [connect-go](https://pkg.go.dev/github.com/bufbuild/connect-go).
