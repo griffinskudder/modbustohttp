@@ -19,3 +19,7 @@ build:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o dist/modbustohttp_darwin-amd64 .
 	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o dist/modbustohttp_darwin-arm64 .
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o dist/modbustohttp_linux-arm64 .
+
+test:
+	echo "Running tests..."
+	go test -v ./...
