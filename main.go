@@ -15,6 +15,7 @@ import (
 	"modbustohttp/service/modbustohttp/v1alpha1/v1alpha1connect"
 
 	"connectrpc.com/connect"
+	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/validate"
 	"github.com/goburrow/modbus"
@@ -47,6 +48,14 @@ func setupReflector(mux *http.ServeMux, logger *slog.Logger) {
 
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+}
+
+func setupHealthCheck(mux *http.ServeMux, logger *slog.Logger) {
+	logger.Info("setting up health check")
+	checker := grpchealth.NewStaticChecker(
+		"modbustohttp.v1alpha1.ModbusService",
+	)
+	mux.Handle(grpchealth.NewHandler(checker))
 }
 
 func setupInterceptors(logger *slog.Logger) ([]connect.Interceptor, error) {
@@ -131,6 +140,8 @@ func main() {
 	setupServiceHandler(modbusServer, mux, structuredLogger, serviceInterceptors...)
 
 	setupReflector(mux, structuredLogger)
+
+	setupHealthCheck(mux, structuredLogger)
 
 	server := setupServer(addr, mux, structuredLogger)
 

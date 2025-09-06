@@ -5,8 +5,10 @@ go 1.25
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.8-20250717185734-6c6e0d3c608e.1
 	connectrpc.com/connect v1.18.1
+	connectrpc.com/grpchealth v1.4.0
 	connectrpc.com/grpcreflect v1.3.0
 	connectrpc.com/validate v0.3.0
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/goburrow/modbus v0.1.0
 	golang.org/x/net v0.43.0
 	google.golang.org/protobuf v1.36.8
@@ -16,7 +18,6 @@ require (
 	buf.build/go/protovalidate v0.14.0 // indirect
 	cel.dev/expr v0.24.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
-	github.com/caarlos0/env/v11 v11.3.1 // indirect
 	github.com/goburrow/serial v0.1.0 // indirect
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
