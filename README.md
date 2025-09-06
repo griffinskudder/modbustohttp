@@ -78,13 +78,7 @@ docker run -d -p 8080:8080 -e HTTP_HOST --name modbustohttp modbustohttp:latest
 A docker compose file is provided to run the server in a docker container which can be found [here](docker-compose.yaml).
 
 ## Development
-To run the server locally, you will need to have Go installed. You can then run the following command:
-
-```bash
-make run
-```
-
-This will start the server with the default configuration. You can then access the server at `http://localhost:8080`.
+A Makefile is provided to simplify common tasks. The following commands are available:
 
 To run the tests, use the following command:
 
