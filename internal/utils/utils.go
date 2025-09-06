@@ -27,9 +27,8 @@ func BoolArrayToByteArray(boolArray []bool) []byte {
 	} else {
 		bools = make([]bool, len(boolArray))
 	}
-	for i, b := range boolArray {
-		bools[i] = b
-	}
+	// for safety, copy the values
+	copy(bools, boolArray)
 	data := make([]byte, len(bools)/8)
 	for i := 0; i < len(bools); i = i + 8 {
 		byteVal := bitsToByte([8]bool(bools[i : i+8]))

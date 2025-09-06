@@ -43,9 +43,7 @@ type AppConfig struct {
 func LoadAppConfig(path *string) (*AppConfig, error) {
 	file, err := os.Open(*path)
 	defer func(file *os.File) {
-		err = file.Close()
-		if err != nil {
-		}
+		_ = file.Close()
 	}(file)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {

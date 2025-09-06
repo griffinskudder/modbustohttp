@@ -76,3 +76,49 @@ docker run -d -p 8080:8080 -e HTTP_HOST --name modbustohttp modbustohttp:latest
 
 ### Docker Compose
 A docker compose file is provided to run the server in a docker container which can be found [here](docker-compose.yaml).
+
+## Development
+To run the server locally, you will need to have Go installed. You can then run the following command:
+
+```bash
+make run
+```
+
+This will start the server with the default configuration. You can then access the server at `http://localhost:8080`.
+
+To run the tests, use the following command:
+
+```bash
+make test
+```
+
+To generate the protobuf and openapi files, use the following command:
+
+```bash
+make generate
+```
+This will generate the protobuf files in the `proto` directory and the openapi files in the `specs/openapi` directory.
+To format the code, use the following command:
+
+```bash
+make fmt
+``` 
+This will format the code using `go fmt`.
+To lint the code, use the following command:
+
+```bash
+make lint
+```
+This will lint the code using `golangci-lint` and `buf lint`.
+To build the server, use the following command:
+
+```bash
+make build
+```
+This will build the server and create an executable file in the `dist` directory.
+To clean the build files, use the following command:
+
+```bash
+make clean
+```
+This will remove the `dist` directory.
