@@ -1,0 +1,5 @@
+*.cmd
+.gitignore
+*.example.*
+Makefile
+*.md

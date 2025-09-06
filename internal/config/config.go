@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type ModbusFunction string
@@ -21,20 +22,20 @@ const (
 )
 
 type Modbus struct {
-	Host               string           `json:"host"`
-	Port               int              `json:"port"`
-	SlaveID            byte             `json:"slaveID"`
-	FunctionsSupported []ModbusFunction `json:"functionsSupported"`
+	Host               string           `json:"host" env:"HOST"`
+	Port               int              `json:"port" env:"PORT"`
+	SlaveID            byte             `json:"slaveID" env:"SLAVE_ID"`
+	FunctionsSupported []ModbusFunction `json:"functionsSupported" env:"FUNCTIONS_SUPPORTED"`
 }
 
 type HTTP struct {
-	Host string `json:"host"`
-	Port int    `json:"port"`
+	Host string `json:"host" env:"HOST"`
+	Port int    `json:"port" env:"PORT"`
 }
 
 type AppConfig struct {
-	Modbus Modbus `json:"modbus"`
-	HTTP   HTTP   `json:"http"`
+	Modbus Modbus `json:"modbus" env:"MODBUS_"`
+	HTTP   HTTP   `json:"http" env:"HTTP_"`
 }
 
 func LoadAppConfig(path string) (*AppConfig, error) {
@@ -42,11 +43,44 @@ func LoadAppConfig(path string) (*AppConfig, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// Return default configuration if file does not exist
+			modbusHost, found := os.LookupEnv("MODBUS_HOST")
+			if !found {
+				modbusHost = "localhost"
+			}
+			modbusPortEnv := os.Getenv("MODBUS_PORT")
+			if modbusPortEnv == "" {
+				modbusPortEnv = "502"
+			}
+			modbusPort, err := strconv.Atoi(modbusPortEnv)
+			if err != nil {
+				modbusPort = 502
+			}
+			modbusSlaveID := os.Getenv("MODBUS_SLAVE_ID")
+			if modbusSlaveID == "" {
+				modbusSlaveID = "1"
+			}
+			slaveID, err := strconv.Atoi(modbusSlaveID)
+			if err != nil || slaveID < 0 || slaveID > 255 {
+				slaveID = 1
+			}
+			httpHost, found := os.LookupEnv("HTTP_HOST")
+			if !found {
+				httpHost = "localhost"
+			}
+			httpPortEnv := os.Getenv("HTTP_PORT")
+			if httpPortEnv == "" {
+				httpPortEnv = "8080"
+			}
+			httpPort, err := strconv.Atoi(httpPortEnv)
+			if err != nil {
+				httpPort = 8080
+			}
+			fmt.Println("Configuration file not found, using default configuration")
 			return &AppConfig{
 				Modbus: Modbus{
-					Host:    "localhost",
-					Port:    502,
-					SlaveID: 1,
+					Host:    modbusHost,
+					Port:    modbusPort,
+					SlaveID: byte(slaveID),
 					FunctionsSupported: []ModbusFunction{
 						ReadCoils,
 						ReadDiscreteInputs,
@@ -60,8 +94,8 @@ func LoadAppConfig(path string) (*AppConfig, error) {
 					},
 				},
 				HTTP: HTTP{
-					Host: "localhost",
-					Port: 8080,
+					Host: httpHost,
+					Port: httpPort,
 				},
 			}, nil
 		} else {

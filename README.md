@@ -43,12 +43,25 @@ The request requires the following parameters:
 
 ## Config
 
+The server can be configured using environment variables or a json config file. If both are provided, the json file will
+take precedence. To specify a config file, use the `-config` flag when starting the server or set the `CONFIG_FILE` 
+environment variable. The default config file is `config.json` in the application working directory.
+
+## Environment Variables
+
+The following environment variables can be used to configure the server:
+- `MODBUS_HOST`: The modbus server host (default: localhost)
+- `MODBUS_PORT`: The modbus server port (default: 502)
+- `MODBUS_SLAVE_ID`: The modbus slave id (default: 1)
+- `HTTP_HOST`: The http server host (default: localhost)
+- `HTTP_PORT`: The http server port (default: 8080)
+
+## File
 The server can be configured using a json file. An example config file can be found [here](config.example.json).
 
 ```json
 {
     "modbus": {
-        "protocol": "tcp",
         "host": "localhost",
         "port": 502,
         "slave_id": 1
