@@ -2,9 +2,11 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
+	"io/fs"
 	"os"
-	"strconv"
+
+	"github.com/caarlos0/env/v11"
 )
 
 type ModbusFunction string
@@ -22,92 +24,39 @@ const (
 )
 
 type Modbus struct {
-	Host               string           `json:"host" env:"HOST"`
-	Port               int              `json:"port" env:"PORT"`
-	SlaveID            byte             `json:"slaveID" env:"SLAVE_ID"`
-	FunctionsSupported []ModbusFunction `json:"functionsSupported" env:"FUNCTIONS_SUPPORTED"`
+	Host               string           `json:"host" env:"HOST" envDefault:"localhost"`
+	Port               int              `json:"port" env:"PORT" envDefault:"502"`
+	SlaveID            byte             `json:"slaveID" env:"SLAVE_ID" envDefault:"1"`
+	FunctionsSupported []ModbusFunction `json:"functionsSupported" env:"FUNCTIONS_SUPPORTED" envDefault:"ReadCoils,ReadDiscreteInputs,ReadHoldingRegisters,ReadInputRegisters,WriteSingleCoil,WriteMultipleCoils,WriteMultipleRegisters,WriteSingleRegister,MaskWriteSingleRegister"`
 }
 
 type HTTP struct {
-	Host string `json:"host" env:"HOST"`
-	Port int    `json:"port" env:"PORT"`
+	Host string `json:"host" env:"HOST" envDefault:""`
+	Port int    `json:"port" env:"PORT" envDefault:"8080"`
 }
 
 type AppConfig struct {
-	Modbus Modbus `json:"modbus" env:"MODBUS_"`
-	HTTP   HTTP   `json:"http" env:"HTTP_"`
+	Modbus Modbus `json:"modbus" envPrefix:"MODBUS_"`
+	HTTP   HTTP   `json:"http" envPrefix:"HTTP_"`
 }
 
-func LoadAppConfig(path string) (*AppConfig, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			// Return default configuration if file does not exist
-			modbusHost, found := os.LookupEnv("MODBUS_HOST")
-			if !found {
-				modbusHost = "localhost"
-			}
-			modbusPortEnv := os.Getenv("MODBUS_PORT")
-			if modbusPortEnv == "" {
-				modbusPortEnv = "502"
-			}
-			modbusPort, err := strconv.Atoi(modbusPortEnv)
-			if err != nil {
-				modbusPort = 502
-			}
-			modbusSlaveID := os.Getenv("MODBUS_SLAVE_ID")
-			if modbusSlaveID == "" {
-				modbusSlaveID = "1"
-			}
-			slaveID, err := strconv.Atoi(modbusSlaveID)
-			if err != nil || slaveID < 0 || slaveID > 255 {
-				slaveID = 1
-			}
-			httpHost, found := os.LookupEnv("HTTP_HOST")
-			if !found {
-				httpHost = "localhost"
-			}
-			httpPortEnv := os.Getenv("HTTP_PORT")
-			if httpPortEnv == "" {
-				httpPortEnv = "8080"
-			}
-			httpPort, err := strconv.Atoi(httpPortEnv)
-			if err != nil {
-				httpPort = 8080
-			}
-			fmt.Println("Configuration file not found, using default configuration")
-			return &AppConfig{
-				Modbus: Modbus{
-					Host:    modbusHost,
-					Port:    modbusPort,
-					SlaveID: byte(slaveID),
-					FunctionsSupported: []ModbusFunction{
-						ReadCoils,
-						ReadDiscreteInputs,
-						ReadHoldingRegisters,
-						ReadInputRegisters,
-						WriteSingleCoil,
-						WriteMultipleCoils,
-						WriteMultipleRegisters,
-						WriteSingleRegister,
-						MaskWriteSingleRegister,
-					},
-				},
-				HTTP: HTTP{
-					Host: httpHost,
-					Port: httpPort,
-				},
-			}, nil
-		} else {
-			return nil, err
-		}
-	}
+func LoadAppConfig(path *string) (*AppConfig, error) {
+	file, err := os.Open(*path)
 	defer func(file *os.File) {
-		err := file.Close()
+		err = file.Close()
 		if err != nil {
-			fmt.Println("Error closing file:", err)
 		}
 	}(file)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			app := AppConfig{}
+			err = env.Parse(&app)
+			if err != nil {
+				return nil, err
+			}
+			return &app, nil
+		}
+	}
 	var app AppConfig
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&app)

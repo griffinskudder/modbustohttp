@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     depends_on:
@@ -15,6 +13,7 @@ services:
         - MODBUS_HOST=modbus-server
         - MODBUS_PORT=5020
         - MODBUS_SLAVE_ID=1
+        - MODBUS_FUNCTIONS_SUPPORTED=ReadCoils,ReadDiscreteInputs,ReadHoldingRegisters,ReadInputRegisters,WriteSingleCoil,WriteMultipleCoils,WriteSingleRegister,WriteMultipleRegisters
         - HTTP_PORT=8080
         - HTTP_HOST=
   modbus-server:

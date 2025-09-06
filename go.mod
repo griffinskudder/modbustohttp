@@ -16,6 +16,7 @@ require (
 	buf.build/go/protovalidate v0.14.0 // indirect
 	cel.dev/expr v0.24.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
+	github.com/caarlos0/env/v11 v11.3.1 // indirect
 	github.com/goburrow/serial v0.1.0 // indirect
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect

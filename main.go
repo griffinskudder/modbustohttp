@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log/slog"
 	"modbustohttp/internal/config"
@@ -95,17 +96,24 @@ func setupServer(addr string, mux *http.ServeMux, logger *slog.Logger) *http.Ser
 }
 
 func main() {
-	configLocation := os.Getenv("CONFIG_FILE")
-	if configLocation == "" {
-		configLocation = "config.json"
+
+	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	configLocation := flag.String("config", os.Getenv("CONFIG_FILE"), "location of config file")
+	flag.Parse()
+	if *configLocation == "" {
+		*configLocation = "config.json"
 	}
 	appConfig, err := config.LoadAppConfig(configLocation)
 	if err != nil {
 		panic(err)
 	}
+	structuredLogger.Info(
+		"loaded application configuration",
+		slog.String("config_file", *configLocation),
+		slog.Any("config", appConfig),
+	)
 	addr := fmt.Sprintf("%s:%d", appConfig.HTTP.Host, appConfig.HTTP.Port)
-
-	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	handler := setupModbusHandler(appConfig, structuredLogger)
 	modbusServer := modbusservice.NewService(handler, &appConfig.Modbus)
@@ -126,7 +134,7 @@ func main() {
 
 	server := setupServer(addr, mux, structuredLogger)
 
-	structuredLogger.Info("starting modbus server", slog.String("addr", addr))
+	structuredLogger.Info("starting http server", slog.String("addr", addr))
 
 	if err := server.ListenAndServe(); err != nil {
 		slog.Error("error running application",

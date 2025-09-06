@@ -47,28 +47,32 @@ The server can be configured using environment variables or a json config file. 
 take precedence. To specify a config file, use the `-config` flag when starting the server or set the `CONFIG_FILE` 
 environment variable. The default config file is `config.json` in the application working directory.
 
-## Environment Variables
+### Environment Variables
 
 The following environment variables can be used to configure the server:
 - `MODBUS_HOST`: The modbus server host (default: localhost)
 - `MODBUS_PORT`: The modbus server port (default: 502)
 - `MODBUS_SLAVE_ID`: The modbus slave id (default: 1)
-- `HTTP_HOST`: The http server host (default: localhost)
+- `MODBUS_FUNCTIONS_SUPPORTED`: A comma separated list of supported modbus functions (default: all functions supported)
+- `HTTP_HOST`: The http server host (default: blank, all interfaces)
 - `HTTP_PORT`: The http server port (default: 8080)
 
-## File
+### File
 The server can be configured using a json file. An example config file can be found [here](config.example.json).
 
-```json
-{
-    "modbus": {
-        "host": "localhost",
-        "port": 502,
-        "slave_id": 1
-    },
-    "http": {
-        "host": "localhost",
-        "port": 8080
-    }
-}
+## Docker
+
+A Dockerfile is provided to build a docker image of the server. To build the image, run the following command:
+
+```bash
+docker build -t modbustohttp:latest .
 ```
+
+To run the server in a docker container, use the following command:
+
+```bash
+docker run -d -p 8080:8080 -e HTTP_HOST --name modbustohttp modbustohttp:latest
+```
+
+### Docker Compose
+A docker compose file is provided to run the server in a docker container which can be found [here](docker-compose.yaml).
