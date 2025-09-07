@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -58,12 +59,26 @@ func setupReflector(mux *http.ServeMux, logger *slog.Logger) {
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 }
 
-func setupHealthCheck(mux *http.ServeMux, logger *slog.Logger) {
+type ModbusChecker struct {
+	ModbusHandler *modbus.TCPClientHandler
+}
+
+func (m ModbusChecker) Check(_ context.Context, _ *grpchealth.CheckRequest) (*grpchealth.CheckResponse, error) {
+	err := m.ModbusHandler.Connect()
+	if err != nil {
+		return &grpchealth.CheckResponse{Status: grpchealth.StatusNotServing}, nil
+	} else {
+		return &grpchealth.CheckResponse{Status: grpchealth.StatusServing}, nil
+	}
+}
+
+func NewModbusChecker(modbusHandler *modbus.TCPClientHandler) grpchealth.Checker {
+	return ModbusChecker{ModbusHandler: modbusHandler}
+}
+
+func setupHealthCheck(mux *http.ServeMux, logger *slog.Logger, handler *modbus.TCPClientHandler) {
 	logger.Info("setting up health check")
-	checker := grpchealth.NewStaticChecker(
-		"modbustohttp.v1alpha1.ModbusService",
-	)
-	mux.Handle(grpchealth.NewHandler(checker))
+	mux.Handle(grpchealth.NewHandler(NewModbusChecker(handler)))
 }
 
 func setupInterceptors(logger *slog.Logger) ([]connect.Interceptor, error) {
@@ -149,7 +164,7 @@ func main() {
 
 	setupReflector(mux, structuredLogger)
 
-	setupHealthCheck(mux, structuredLogger)
+	setupHealthCheck(mux, structuredLogger, handler)
 
 	server := setupServer(addr, mux, structuredLogger)
 
