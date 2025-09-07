@@ -51,13 +51,23 @@ of reading a register as bits.
 ## Specs
 
 - [OpenAPI Spec](./specs/openapi)
-- [Protocol Buffers Spec](./proto/modbustohttp/v1alpha1)
+- [Protocol Buffers Spec](specs/proto/modbustohttp/v1alpha1)
 
 ## Config
 
 The server can be configured using environment variables or a json config file. If both are provided, the json file will
-take precedence. To specify a config file, use the `-config` flag when starting the server or set the `CONFIG_FILE` 
-environment variable. The default config file is `config.json` in the application working directory.
+take precedence. To specify a config file, use the `--config` flag when starting the server. For example:  
+```bash
+./modbustohttp --config $(PWD)/config.json
+```
+
+You can also set the `CONFIG_FILE` environment variable.
+
+```bash
+EXPORT CONFIG_FILE=$(PWD)/config.json
+./modbustohttp
+```
+
 
 ### Environment Variables
 

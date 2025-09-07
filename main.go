@@ -1,13 +1,13 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log/slog"
-	"modbustohttp/internal/config"
 	"modbustohttp/internal/interceptors"
-	"modbustohttp/internal/modbusservice"
+	"modbustohttp/internal/services/health"
+	"modbustohttp/internal/services/modbusservice"
+	"modbustohttp/pkg/config"
 	"net/http"
 	"os"
 	"strings"
@@ -59,26 +59,9 @@ func setupReflector(mux *http.ServeMux, logger *slog.Logger) {
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 }
 
-type ModbusChecker struct {
-	ModbusHandler *modbus.TCPClientHandler
-}
-
-func (m ModbusChecker) Check(_ context.Context, _ *grpchealth.CheckRequest) (*grpchealth.CheckResponse, error) {
-	err := m.ModbusHandler.Connect()
-	if err != nil {
-		return &grpchealth.CheckResponse{Status: grpchealth.StatusNotServing}, nil
-	} else {
-		return &grpchealth.CheckResponse{Status: grpchealth.StatusServing}, nil
-	}
-}
-
-func NewModbusChecker(modbusHandler *modbus.TCPClientHandler) grpchealth.Checker {
-	return ModbusChecker{ModbusHandler: modbusHandler}
-}
-
 func setupHealthCheck(mux *http.ServeMux, logger *slog.Logger, handler *modbus.TCPClientHandler) {
 	logger.Info("setting up health check")
-	mux.Handle(grpchealth.NewHandler(NewModbusChecker(handler)))
+	mux.Handle(grpchealth.NewHandler(health.NewModbusChecker(handler)))
 }
 
 func setupInterceptors(logger *slog.Logger) ([]connect.Interceptor, error) {
@@ -131,11 +114,15 @@ func main() {
 
 	structuredLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
+	// Get the config file location from the command line flag or environment variable.
+	// If neither is set, the default is an empty string. The command line flag takes precedence over the environment
+	// variable.
+	// If the config file location is an empty string, the application will attempt to load configuration from
+	// environment variables only.
+	// If the config file does not exist, the application will attempt to load configuration from environment variables
+	// only.
 	configLocation := flag.String("config", os.Getenv("CONFIG_FILE"), "location of config file")
 	flag.Parse()
-	if *configLocation == "" {
-		*configLocation = "config.json"
-	}
 	appConfig, err := config.LoadAppConfig(configLocation)
 	if err != nil {
 		panic(err)

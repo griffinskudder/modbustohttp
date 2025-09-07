@@ -3,8 +3,8 @@ package modbusservice
 import (
 	"context"
 	"encoding/binary"
-	"modbustohttp/internal/config"
 	"modbustohttp/internal/utils"
+	"modbustohttp/pkg/config"
 	"slices"
 	"time"
 
