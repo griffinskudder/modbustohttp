@@ -155,6 +155,16 @@ func main() {
 
 	structuredLogger.Info("starting http server", slog.String("addr", addr))
 
+	defer func(handler *modbus.TCPClientHandler) {
+		// Make sure the modbus handler is closed when the application exits.
+		err = handler.Close()
+		if err != nil {
+			structuredLogger.Error("error closing modbus handler",
+				slog.String("error", err.Error()),
+			)
+		}
+	}(handler)
+
 	if err := server.ListenAndServe(); err != nil {
 		slog.Error("error running application",
 			slog.String("error", err.Error()),
