@@ -1,16 +1,18 @@
 package utils
 
-func ByteToBoolArray(b byte) []bool {
-	boolArray := make([]bool, 8)
+// ByteToBoolSlice converts a byte to an array of 8 booleans representing each bit.
+func ByteToBoolSlice(b byte) []bool {
+	bools := make([]bool, 8)
 	for i := 0; i < 8; i++ {
-		boolArray[i] = (b & (1 << i)) != 0
+		bools[i] = (b & (1 << i)) != 0
 	}
-	return boolArray
+	return bools
 }
 
-func bitsToByte(mei [8]bool) byte {
+// bitsToByte converts an array of 8 booleans to a byte.
+func bitsToByte(bools [8]bool) byte {
 	var result uint8
-	for _, b := range mei {
+	for _, b := range bools {
 		result >>= 1
 		if b {
 			result |= 0b10000000
@@ -19,20 +21,20 @@ func bitsToByte(mei [8]bool) byte {
 	return result
 }
 
-func BoolArrayToByteArray(boolArray []bool) []byte {
-	var bools []bool
-	// Expand the array to the next highest multiple of 8
-	if len(boolArray)%8 != 0 {
-		bools = make([]bool, len(boolArray)+8-len(boolArray)%8)
+// BoolSliceToByteSlice converts a slice of booleans to a slice of bytes.
+// Each byte represents 8 booleans. If the length of the boolean array is not a multiple of 8,
+// it will be padded with false values at the end.
+func BoolSliceToByteSlice(boolsInput []bool) []byte {
+	var output []byte
+	if len(boolsInput)%8 != 0 {
+		// Ensure the output slice has enough space to hold all bits, padding with false if necessary.
+		output = make([]byte, (len(boolsInput)+8-len(boolsInput)%8)/8)
 	} else {
-		bools = make([]bool, len(boolArray))
+		output = make([]byte, len(boolsInput)/8)
 	}
-	// for safety, copy the values
-	copy(bools, boolArray)
-	data := make([]byte, len(bools)/8)
-	for i := 0; i < len(bools); i = i + 8 {
-		byteVal := bitsToByte([8]bool(bools[i : i+8]))
-		data[i/8] = byteVal
+	for i := 0; i < len(boolsInput); i = i + 8 {
+		byteVal := bitsToByte([8]bool(boolsInput[i : i+8]))
+		output[i/8] = byteVal
 	}
-	return data
+	return output
 }

@@ -8,6 +8,8 @@ import (
 	"connectrpc.com/connect"
 )
 
+// NewLoggingInterceptor returns a Connect interceptor that logs the details of each request and response.
+// It logs the procedure name, request data, response data, and any errors that occur during the call.
 func NewLoggingInterceptor(logger *slog.Logger) connect.UnaryInterceptorFunc {
 	return func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, request connect.AnyRequest) (connect.AnyResponse, error) {

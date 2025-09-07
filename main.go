@@ -23,20 +23,28 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-func setupModbusHandler(appConfig *config.AppConfig, logger *slog.Logger) *modbus.TCPClientHandler {
+func setupModbusHandler(modbusConfig *config.Modbus, logger *slog.Logger) *modbus.TCPClientHandler {
 	logger.Info("setting up modbus handler",
-		slog.String("host", appConfig.Modbus.Host),
-		slog.Int("port", appConfig.Modbus.Port),
-		slog.Int("slave_id", int(appConfig.Modbus.SlaveID)),
+		slog.String("host", modbusConfig.Host),
+		slog.Int("port", modbusConfig.Port),
+		slog.Int("slave_id", int(modbusConfig.SlaveID)),
+		slog.Duration("connection_timeout", modbusConfig.ConnectionTimeout),
+		slog.String("functions_supported", strings.Join(func() []string {
+			var funcs []string
+			for _, f := range modbusConfig.FunctionsSupported {
+				funcs = append(funcs, string(f))
+			}
+			return funcs
+		}(), ", ")),
 	)
-	handler := modbus.NewTCPClientHandler(fmt.Sprintf("%s:%d", appConfig.Modbus.Host, appConfig.Modbus.Port))
-	handler.Timeout = 10 * time.Second
-	handler.SlaveId = appConfig.Modbus.SlaveID
+	handler := modbus.NewTCPClientHandler(fmt.Sprintf("%s:%d", modbusConfig.Host, modbusConfig.Port))
+	handler.Timeout = modbusConfig.ConnectionTimeout
+	handler.SlaveId = modbusConfig.SlaveID
 	return handler
 }
 
 func setupReflector(mux *http.ServeMux, logger *slog.Logger) {
-	names := []string{v1alpha1connect.ModbusServiceName}
+	names := []string{v1alpha1connect.ModbusServiceName, "grpc.health.v1.Health"}
 	logger.Info("setting up reflector",
 		slog.String("services", strings.Join(names, ",")),
 	)
@@ -124,7 +132,7 @@ func main() {
 	)
 	addr := fmt.Sprintf("%s:%d", appConfig.HTTP.Host, appConfig.HTTP.Port)
 
-	handler := setupModbusHandler(appConfig, structuredLogger)
+	handler := setupModbusHandler(&appConfig.Modbus, structuredLogger)
 	modbusServer := modbusservice.NewService(handler, &appConfig.Modbus)
 	mux := http.NewServeMux()
 

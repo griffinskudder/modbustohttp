@@ -9,7 +9,7 @@ import (
 func MapByteArrayToBooleanAddress(data []byte, startAddress uint32, maxQuantity uint32) []*modbusv1alpha1.BooleanAddress {
 	booleanAddresses := make([]*modbusv1alpha1.BooleanAddress, maxQuantity)
 	for i, dataByte := range data {
-		bits := utils.ByteToBoolArray(dataByte)
+		bits := utils.ByteToBoolSlice(dataByte)
 		for j, bit := range bits {
 			if uint32(i*8+j) >= maxQuantity {
 				break

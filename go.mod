@@ -12,6 +12,7 @@ require (
 	github.com/goburrow/modbus v0.1.0
 	golang.org/x/net v0.43.0
 	google.golang.org/protobuf v1.36.8
+	gopkg.in/retry.v1 v1.0.3
 )
 
 require (

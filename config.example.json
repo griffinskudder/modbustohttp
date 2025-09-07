@@ -2,6 +2,7 @@
   "modbus": {
     "host": "localhost",
     "port": 502,
+    "connectionTimeout": "10s",
     "functionsSupported": [
         "readCoils",
         "readDiscreteInputs",

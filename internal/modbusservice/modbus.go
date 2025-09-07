@@ -6,9 +6,11 @@ import (
 	"modbustohttp/internal/config"
 	"modbustohttp/internal/utils"
 	"slices"
+	"time"
 
 	"connectrpc.com/connect"
 	"github.com/goburrow/modbus"
+	"gopkg.in/retry.v1"
 
 	modbusv1alpha1 "modbustohttp/service/modbustohttp/v1alpha1"
 )
@@ -18,6 +20,23 @@ type Service struct {
 	modbusConfig  *config.Modbus
 }
 
+func (s Service) connect() error {
+	strategy := retry.LimitTime(30*time.Second,
+		retry.Exponential{
+			Initial: 10 * time.Millisecond,
+			Factor:  1.5,
+		},
+	)
+	var err error
+	for a := retry.Start(strategy, nil); a.Next(); {
+		err = s.modbusHandler.Connect()
+		if err == nil {
+			return nil
+		}
+	}
+	return err
+}
+
 func (s Service) ReadHoldingRegisters(
 	_ context.Context,
 	req *connect.Request[modbusv1alpha1.ReadHoldingRegistersRequest],
@@ -25,9 +44,9 @@ func (s Service) ReadHoldingRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 	modbusData, err := client.ReadHoldingRegisters(
@@ -49,9 +68,9 @@ func (s Service) WriteSingleRegister(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleRegister) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 
@@ -69,9 +88,9 @@ func (s Service) ReadCoils(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadCoils) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 
@@ -91,9 +110,9 @@ func (s Service) ReadDiscreteInputs(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadDiscreteInputs) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 
@@ -116,9 +135,9 @@ func (s Service) WriteSingleCoil(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleCoil) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 	var value uint16
@@ -146,12 +165,12 @@ func (s Service) WriteMultipleCoils(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteMultipleCoils) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
-	data := utils.BoolArrayToByteArray(req.Msg.GetValues())
+	data := utils.BoolSliceToByteSlice(req.Msg.GetValues())
 	_, err = client.WriteMultipleCoils(uint16(req.Msg.GetAddress()), uint16(len(req.Msg.GetValues())), data)
 	if err != nil {
 		return nil, err
@@ -166,9 +185,9 @@ func (s Service) ReadInputRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadInputRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 	modbusData, err := client.ReadInputRegisters(
@@ -190,9 +209,9 @@ func (s Service) WriteMultipleRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteMultipleRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 	data := make([]byte, len(req.Msg.GetValues())*2)
@@ -220,9 +239,9 @@ func (s Service) WriteBitInRegister(
 	if !primaryEnabled && !fallbackEnabled {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 
@@ -282,9 +301,9 @@ func (s Service) ReadRegisterAsBits(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.modbusHandler.Connect()
+	err := s.connect()
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
 	client := modbus.NewClient(s.modbusHandler)
 
@@ -292,8 +311,8 @@ func (s Service) ReadRegisterAsBits(
 	if err != nil {
 		return nil, err
 	}
-	rawBits := utils.ByteToBoolArray(data[1]) // data[0] is the high byte, data[1] is the low byte
-	rawBits = append(rawBits, utils.ByteToBoolArray(data[0])...)
+	rawBits := utils.ByteToBoolSlice(data[1]) // data[0] is the high byte, data[1] is the low byte
+	rawBits = append(rawBits, utils.ByteToBoolSlice(data[0])...)
 
 	bits := make([]*modbusv1alpha1.BooleanAddress, 16)
 	for i, bit := range rawBits {

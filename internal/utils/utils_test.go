@@ -36,11 +36,11 @@ func TestByteToBoolArray(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := ByteToBoolArray(tt.input)
+			result := ByteToBoolSlice(tt.input)
 			for i, item := range result {
 				if item != tt.expected[i] {
 					fmt.Printf("Index: %d, Got: %v, Expected: %v\n", i, item, tt.expected[i])
-					t.Errorf("ByteToBoolArray() = %v, want %v", result, tt.expected)
+					t.Errorf("ByteToBoolSlice() = %v, want %v", result, tt.expected)
 					break
 				}
 			}
@@ -121,9 +121,9 @@ func TestBoolArrayToByteArray(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := BoolArrayToByteArray(tt.input)
+			result := BoolSliceToByteSlice(tt.input)
 			if !reflect.DeepEqual(result, tt.expected) {
-				t.Errorf("BoolArrayToByteArray() = %v, want %v", result, tt.expected)
+				t.Errorf("BoolSliceToByteSlice() = %v, want %v", result, tt.expected)
 			}
 		})
 	}
