@@ -18,16 +18,24 @@ This can be used to check the health of the server and the connection to the mod
 - Write Multiple Coils
 - Write Multiple Registers
 - Write Bit In Register (Custom Function)
+- Read Register as Bits (Custom Function)
 
 ### Write Bit In Register
 This custom function allows you to write a single bit in a holding register without affecting the other bits. 
 It is a wrapper around the MarkWriteSingleRegister function. Providing a simpler syntax which covers the use case 
-of writing a single bit.
+of writing a single bit. If MarkWriteSingleRegister is not supported by the modbus server, this function will fall back
+to reading the register, modifying the bit and writing the register back using ReadHoldingRegisters and 
+WriteSingleRegister.
 
 The request requires the following parameters:
 - `address`: The address of the holding register (0-based).
 - `bit_position`: The position of the bit to write (0-15).
 - `value`: The value to write (true or false).
+
+### Read Register as Bits
+This custom function allows you to read a holding register and return the value as an array of bits. 
+It is a wrapper around the ReadHoldingRegisters function. Providing a simpler syntax which covers the use case 
+of reading a register as bits.
 
 
 ## Supported Modbus Protocols
