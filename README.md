@@ -3,6 +3,10 @@
 A lightweight, extendable modbus to http server using [go modbus](https://pkg.go.dev/github.com/goburrow/modbus) and 
 [connect-go](https://pkg.go.dev/github.com/bufbuild/connect-go).
 
+## Health Check
+The server provides `grpc.health.v1.Health` health check RPCs at the `/grpc.health.v1.Health/Check` endpoint.
+This can be used to check the health of the server and the connection to the modbus server.
+
 ## Supported Functions
 
 - Read Coils
