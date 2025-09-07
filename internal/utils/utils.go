@@ -33,7 +33,15 @@ func BoolSliceToByteSlice(boolsInput []bool) []byte {
 		output = make([]byte, len(boolsInput)/8)
 	}
 	for i := 0; i < len(boolsInput); i = i + 8 {
-		byteVal := bitsToByte([8]bool(boolsInput[i : i+8]))
+		paddedBools := make([]bool, 8)
+		// Copy the next 8 bits, or pad with false if there are fewer than 8 remaining.
+		if i+8 > len(boolsInput) {
+			// Pad the remaining bits with false if we don't have enough to make a full byte.
+			copy(paddedBools, boolsInput[i:])
+		} else {
+			copy(paddedBools, boolsInput[i:i+8])
+		}
+		byteVal := bitsToByte([8]bool(paddedBools))
 		output[i/8] = byteVal
 	}
 	return output

@@ -16,7 +16,7 @@ lint:
 
 clean:
 	echo "Cleaning up..."
-	rm -rf "$(CURDIR)/dist" || echo("dist directory does not exist")
+	rm -rf "$(CURDIR)/dist"
 
 fmt:
 	echo "Formatting code..."
