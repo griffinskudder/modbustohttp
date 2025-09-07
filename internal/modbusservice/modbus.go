@@ -20,7 +20,11 @@ type Service struct {
 	modbusConfig  *config.Modbus
 }
 
-func (s Service) connect() error {
+// connectModbus tries to connect to the Modbus server with a retry strategy.
+// It will keep trying to connect until the connection is successful or the timeout is reached.
+// If the connection is successful, it returns nil. If the timeout is reached, it returns the last error.
+// If the connection is already established, it does nothing and returns nil.
+func (s Service) connectModbus() error {
 	strategy := retry.LimitTime(30*time.Second,
 		retry.Exponential{
 			Initial: 10 * time.Millisecond,
@@ -44,7 +48,7 @@ func (s Service) ReadHoldingRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -68,7 +72,7 @@ func (s Service) WriteSingleRegister(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleRegister) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -88,7 +92,7 @@ func (s Service) ReadCoils(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadCoils) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -110,7 +114,7 @@ func (s Service) ReadDiscreteInputs(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadDiscreteInputs) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -135,7 +139,7 @@ func (s Service) WriteSingleCoil(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteSingleCoil) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -165,7 +169,7 @@ func (s Service) WriteMultipleCoils(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteMultipleCoils) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -185,7 +189,7 @@ func (s Service) ReadInputRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadInputRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -209,7 +213,7 @@ func (s Service) WriteMultipleRegisters(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.WriteMultipleRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -239,7 +243,7 @@ func (s Service) WriteBitInRegister(
 	if !primaryEnabled && !fallbackEnabled {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
@@ -301,7 +305,7 @@ func (s Service) ReadRegisterAsBits(
 	if slices.Index(s.modbusConfig.FunctionsSupported, config.ReadHoldingRegisters) == -1 {
 		return nil, connect.NewError(connect.CodeUnimplemented, nil)
 	}
-	err := s.connect()
+	err := s.connectModbus()
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
