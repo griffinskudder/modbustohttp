@@ -1,6 +1,6 @@
 version: v2
 inputs:
-  - directory: proto
+  - directory: specs/proto
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: service
