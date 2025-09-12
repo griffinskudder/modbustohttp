@@ -33,3 +33,10 @@ build:
 test:
 	echo "Running tests..."
 	go test -v ./...
+
+docs:
+	echo "Generating docs..."
+	docker pull redocly/cli
+	docker run --rm -v "$(CURDIR)":/spec redocly/cli build-docs specs/openapi/modbustohttp.yaml --output /spec/docs/openapi.html
+
+.PHONY: docs
